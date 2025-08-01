@@ -14,38 +14,10 @@
 
 namespace RunCat365
 {
-    enum Drive
-    {
-        C,
-        D
-    }
-
-    internal static class DriveExtension
-    {
-        internal static string GetString(this Drive drive)
-        {
-            return drive switch
-            {
-                Drive.C => "C Drive",
-                Drive.D => "D Drive",
-                _ => "",
-            };
-        }
-
-        internal static Drive? CreateFromString(string? value)
-        {
-            return value switch
-            {
-                "C:\\" => Drive.C,
-                "D:\\" => Drive.D,
-                _ => null,
-            };
-        }
-    }
 
     struct StorageInfo
     {
-        internal Drive Drive { get; set; }
+        internal string DriveName { get; set; }
         internal long TotalSize { get; set; }
         internal long AvailableSpaceSize { get; set; }
         internal long UsedSpaceSize { get; set; }
@@ -55,11 +27,7 @@ namespace RunCat365
     {
         internal static List<string> GenerateIndicator(this List<StorageInfo> storageInfoList)
         {
-            var resultLines = new List<string>
-            {
-                "Storage:"
-            };
-
+            var resultLines = new List<string> { "Storage:" };
             if (storageInfoList.Count == 0) return resultLines;
 
             for (int i = 0; i < storageInfoList.Count; i++)
@@ -69,7 +37,8 @@ namespace RunCat365
                 var parentPrefix = isLastItem ? "   └─ " : "   ├─ ";
                 var childIndent = isLastItem ? "      " : "   │  ";
                 var percentage = ((double)info.UsedSpaceSize / info.TotalSize) * 100.0;
-                resultLines.Add($"{parentPrefix}{info.Drive.GetString()}: {percentage:f1}%");
+
+                resultLines.Add($"{parentPrefix}{info.DriveName.Replace(":", "")} Drive: {percentage:f1}%");
                 resultLines.Add($"{childIndent}   ├─ Used: {info.UsedSpaceSize.ToByteFormatted()}");
                 resultLines.Add($"{childIndent}   └─ Available: {info.AvailableSpaceSize.ToByteFormatted()}");
             }
@@ -90,23 +59,22 @@ namespace RunCat365
             var allDrives = DriveInfo.GetDrives();
             foreach (DriveInfo driveInfo in allDrives)
             {
-                if (driveInfo.IsReady && DriveExtension.CreateFromString(driveInfo.Name) is Drive drive)
+                if (!driveInfo.IsReady) continue;
+
+                try
                 {
-                    try
+                    var storageInfo = new StorageInfo
                     {
-                        var storageInfo = new StorageInfo
-                        {
-                            Drive = drive,
-                            TotalSize = driveInfo.TotalSize,
-                            AvailableSpaceSize = driveInfo.AvailableFreeSpace,
-                            UsedSpaceSize = driveInfo.TotalSize - driveInfo.AvailableFreeSpace
-                        };
-                        storageInfoList.Add(storageInfo);
-                    }
-                    catch (Exception ex)
-                    {
-                        Console.WriteLine($"Error: {ex.Message}");
-                    }
+                        DriveName = driveInfo.Name.TrimEnd('\\'),
+                        TotalSize = driveInfo.TotalSize,
+                        AvailableSpaceSize = driveInfo.AvailableFreeSpace,
+                        UsedSpaceSize = driveInfo.TotalSize - driveInfo.AvailableFreeSpace
+                    };
+                    storageInfoList.Add(storageInfo);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error: {ex.Message}");
                 }
             }
         }
