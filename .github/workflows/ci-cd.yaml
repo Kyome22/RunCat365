@@ -1,0 +1,56 @@
+name: CI / CD
+
+on:
+  pull_request:
+    branches:
+      - main
+  release:
+    types:
+      - published
+
+jobs:
+  build:
+    runs-on: windows-latest
+    strategy:
+      matrix:
+        runtime: [win-x64, win-arm64]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET 9.0
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '9.0.x'
+
+      - name: Restore
+        run: dotnet restore RunCat365.sln
+
+      - name: Build
+        run: dotnet build RunCat365.sln --configuration Release --no-restore
+
+      - name: Publish self‑contained single file
+        run: |
+          dotnet publish RunCat365/RunCat365.csproj \
+            --configuration Release \
+            --runtime ${{ matrix.runtime }} \
+            --self-contained true \
+            /p:PublishSingleFile=true \
+            --output ./out/${{ matrix.runtime }}
+
+      - name: Upload PR artifact
+        if: github.event_name == 'pull_request'
+        uses: actions/upload-artifact@v3
+        with:
+          name: RunCat365-${{ matrix.runtime }}-${{ github.sha }}
+          path: ./out/${{ matrix.runtime }}
+
+      - name: Attach binaries to Release
+        if: github.event_name == 'release'
+        uses: actions/upload-release-asset@v2
+        with:
+          upload_url: ${{ github.event.release.upload_url }}
+          asset_path: ./out/${{ matrix.runtime }}/RunCat365.exe
+          asset_name: RunCat365-${{ matrix.runtime }}.exe
+          asset_content_type: application/octet-stream
