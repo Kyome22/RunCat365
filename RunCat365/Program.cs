@@ -104,7 +104,7 @@ namespace RunCat365
 
         private static Theme GetSystemTheme()
         {
-            var keyName = @"Software\Microsoft\Windows\CurrentVersion\Themes\Personalize";
+            var keyName = @"SOFTWARE\Microsoft\Windows\CurrentVersion\Themes\Personalize";
             using var rKey = Registry.CurrentUser.OpenSubKey(keyName);
             if (rKey is null) return Theme.Light;
             var value = rKey.GetValue("SystemUsesLightTheme");
@@ -115,7 +115,7 @@ namespace RunCat365
 
         private static bool GetStartup()
         {
-            var keyName = @"Software\Microsoft\Windows\CurrentVersion\Run";
+            var keyName = @"SOFTWARE\Microsoft\Windows\CurrentVersion\Run";
             using var rKey = Registry.CurrentUser.OpenSubKey(keyName);
             if (rKey is null) return false;
             var value = (rKey.GetValue(Application.ProductName) is not null);
@@ -127,7 +127,7 @@ namespace RunCat365
         {
             var productName = Application.ProductName;
             if (productName is null) return false;
-            var keyName = @"Software\Microsoft\Windows\CurrentVersion\Run";
+            var keyName = @"SOFTWARE\Microsoft\Windows\CurrentVersion\Run";
             using var rKey = Registry.CurrentUser.OpenSubKey(keyName, true);
             if (rKey is null) return false;
             if (isChecked)
