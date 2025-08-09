@@ -7,7 +7,7 @@
     <UseWindowsForms>true</UseWindowsForms>
     <ImplicitUsings>enable</ImplicitUsings>
     <SupportedOSPlatformVersion>10.0.19041.0</SupportedOSPlatformVersion>
-    <AssemblyName>RunCat 365</AssemblyName>
+    <AssemblyName>RunCat365</AssemblyName>
     <ApplicationIcon>resources\app_icon.ico</ApplicationIcon>
     <Authors>Takuto Nakamura</Authors>
     <Company>Studio Kyome</Company>

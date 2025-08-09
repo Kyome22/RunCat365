@@ -15,10 +15,8 @@
 using RunCat365.Properties;
 using System.ComponentModel;
 
-namespace RunCat365
-{
-    internal class ContextMenuManager
-    {
+namespace RunCat365 {
+    internal class ContextMenuManager {
         private readonly CustomToolStripMenuItem systemInfoMenu = new();
         private readonly NotifyIcon notifyIcon = new();
         private readonly List<Icon> icons = [];
@@ -33,18 +31,18 @@ namespace RunCat365
             Action<Theme> setManualTheme,
             Func<FPSMaxLimit> getFPSMaxLimit,
             Action<FPSMaxLimit> setFPSMaxLimit,
+            Func<bool> getStartup,
+            Func<bool, bool> toggleStartup,
             Action openRepository,
             Action onExit
-        )
-        {
+        ) {
             systemInfoMenu.Text = "-\n-\n-\n-\n-";
             systemInfoMenu.Enabled = false;
 
             var runnersMenu = new CustomToolStripMenuItem("Runners");
             runnersMenu.SetupSubMenusFromEnum<Runner>(
                 r => r.GetString(),
-                (parent, sender, e) =>
-                {
+                (parent, sender, e) => {
                     HandleMenuItemSelection<Runner>(
                         parent,
                         sender,
@@ -60,8 +58,7 @@ namespace RunCat365
             var themeMenu = new CustomToolStripMenuItem("Theme");
             themeMenu.SetupSubMenusFromEnum<Theme>(
                 t => t.GetString(),
-                (parent, sender, e) =>
-                {
+                (parent, sender, e) => {
                     HandleMenuItemSelection<Theme>(
                         parent,
                         sender,
@@ -77,8 +74,7 @@ namespace RunCat365
             var fpsMaxLimitMenu = new CustomToolStripMenuItem("FPS Max Limit");
             fpsMaxLimitMenu.SetupSubMenusFromEnum<FPSMaxLimit>(
                 f => f.GetString(),
-                (parent, sender, e) =>
-                {
+                (parent, sender, e) => {
                     HandleMenuItemSelection<FPSMaxLimit>(
                         parent,
                         sender,
@@ -91,10 +87,16 @@ namespace RunCat365
                 _ => null
             );
 
+            var startupMenu = new CustomToolStripMenuItem("Launch at startup") {
+                Checked = getStartup()
+            };
+            startupMenu.Click += (sender, e) => HandleStartupMenuClick(sender, toggleStartup);
+
             var settingsMenu = new CustomToolStripMenuItem("Settings");
             settingsMenu.DropDownItems.AddRange(
                 themeMenu,
-                fpsMaxLimitMenu
+                fpsMaxLimitMenu,
+                startupMenu
             );
 
             var endlessGameMenu = new CustomToolStripMenuItem("Endless Game");
@@ -102,8 +104,7 @@ namespace RunCat365
 
             var appVersionMenu = new CustomToolStripMenuItem(
                 $"{Application.ProductName} v{Application.ProductVersion}"
-            )
-            {
+            ) {
                 Enabled = false
             };
 
@@ -146,37 +147,31 @@ namespace RunCat365
             object? sender,
             CustomTryParseDelegate<T> tryParseMethod,
             Action<T> assignValueAction
-        )
-        {
+        ) {
             if (sender is null) return;
             var item = (ToolStripMenuItem)sender;
-            foreach (ToolStripMenuItem childItem in parentMenu.DropDownItems)
-            {
+            foreach (ToolStripMenuItem childItem in parentMenu.DropDownItems) {
                 childItem.Checked = false;
             }
             item.Checked = true;
-            if (tryParseMethod(item.Text, out T parsedValue))
-            {
+            if (tryParseMethod(item.Text, out T parsedValue)) {
                 assignValueAction(parsedValue);
             }
         }
 
-        private static Bitmap? GetRunnerThumbnailBitmap(Theme systemTheme, Runner runner)
-        {
+        private static Bitmap? GetRunnerThumbnailBitmap(Theme systemTheme, Runner runner) {
             var iconName = $"{systemTheme.GetString()}_{runner.GetString()}_0".ToLower();
             var obj = Resources.ResourceManager.GetObject(iconName);
             return obj is Icon icon ? icon.ToBitmap() : null;
         }
 
-        internal void SetIcons(Theme systemTheme, Theme manualTheme, Runner runner)
-        {
+        internal void SetIcons(Theme systemTheme, Theme manualTheme, Runner runner) {
             var prefix = (manualTheme == Theme.System ? systemTheme : manualTheme).GetString();
             var runnerName = runner.GetString();
             var rm = Resources.ResourceManager;
             var capacity = runner.GetFrameNumber();
             var list = new List<Icon>(capacity);
-            for (int i = 0; i < capacity; i++)
-            {
+            for (int i = 0; i < capacity; i++) {
                 var iconName = $"{prefix}_{runnerName}_{i}".ToLower();
                 var icon = rm.GetObject(iconName);
                 if (icon is null) continue;
@@ -187,50 +182,48 @@ namespace RunCat365
             icons.AddRange(list);
         }
 
-        private void ShowOrActivateGameWindow(Func<Theme> getSystemTheme)
-        {
-            if (endlessGameForm is null)
-            {
+        private static void HandleStartupMenuClick(object? sender, Func<bool, bool> toggleStartup) {
+            if (sender is null) return;
+            var item = (ToolStripMenuItem)sender;
+            if (toggleStartup(item.Checked)) {
+                item.Checked = !item.Checked;
+            }
+        }
+
+        private void ShowOrActivateGameWindow(Func<Theme> getSystemTheme) {
+            if (endlessGameForm is null) {
                 endlessGameForm = new EndlessGameForm(getSystemTheme());
-                endlessGameForm.FormClosed += (sender, e) =>
-                {
+                endlessGameForm.FormClosed += (sender, e) => {
                     endlessGameForm = null;
                 };
                 endlessGameForm.Show();
-            }
-            else
-            {
+            } else {
                 endlessGameForm.Activate();
             }
         }
 
-        internal void ShowBalloonTip()
-        {
+        internal void ShowBalloonTip() {
             var message = "App has launched. " +
                 "If the icon is not on the taskbar, it has been omitted, " +
                 "so please move it manually and pin it.";
             notifyIcon.ShowBalloonTip(5000, "RunCat 365", message, ToolTipIcon.Info);
         }
 
-        internal void AdvanceFrame()
-        {
+        internal void AdvanceFrame() {
             if (icons.Count <= current) current = 0;
             notifyIcon.Icon = icons[current];
             current = (current + 1) % icons.Count;
         }
 
-        internal void SetSystemInfoMenuText(string text)
-        {
+        internal void SetSystemInfoMenuText(string text) {
             systemInfoMenu.Text = text;
         }
 
-        internal void SetNotifyIconText(string text)
-        {
+        internal void SetNotifyIconText(string text) {
             notifyIcon.Text = text;
         }
 
-        internal void HideNotifyIcon()
-        {
+        internal void HideNotifyIcon() {
             notifyIcon.Visible = false;
         }
 

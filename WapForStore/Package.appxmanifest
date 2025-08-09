@@ -3,16 +3,18 @@
 <Package
   xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10"
   xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10"
+  xmlns:uap5="http://schemas.microsoft.com/appx/manifest/uap/windows10/5"
+  xmlns:desktop="http://schemas.microsoft.com/appx/manifest/desktop/windows10"
   xmlns:rescap="http://schemas.microsoft.com/appx/manifest/foundation/windows10/restrictedcapabilities"
-  IgnorableNamespaces="uap rescap">
+  IgnorableNamespaces="uap uap5 desktop rescap">
 
   <Identity
     Name="StudioKyome.RunCat"
     Publisher="CN=B2C5F2BD-A1AB-42BE-A228-02E6F800BE2A"
-    Version="3.0.2.0" />
+    Version="3.0.3.0" />
 
   <Properties>
-    <DisplayName>RunCat 365</DisplayName>
+    <DisplayName>RunCat365</DisplayName>
     <PublisherDisplayName>Studio Kyome</PublisherDisplayName>
     <Logo>Images\StoreLogo.png</Logo>
   </Properties>
@@ -31,7 +33,7 @@
       Executable="$targetnametoken$.exe"
       EntryPoint="$targetentrypoint$">
       <uap:VisualElements
-        DisplayName="RunCat 365"
+        DisplayName="RunCat365"
         Description="A cute running cat animation on your taskbar. The cat tells you the CPU usage by running speed."
         BackgroundColor="transparent"
         Square150x150Logo="Images\Square150x150Logo.png"
@@ -39,6 +41,16 @@
         <uap:DefaultTile Wide310x150Logo="Images\Wide310x150Logo.png"  Square71x71Logo="Images\SmallTile.png" Square310x310Logo="Images\LargeTile.png"/>
         <uap:SplashScreen Image="Images\SplashScreen.png" />
       </uap:VisualElements>
+	  <Extensions>
+	    <uap5:Extension
+		  Category="windows.startupTask">
+		  <uap5:StartupTask
+            TaskId="RunCatStartup"
+            DisplayName="RunCat365"/>
+	    </uap5:Extension>
+		<desktop:Extension
+		  Category="windows.fullTrustProcess" />
+	  </Extensions>
     </Application>
   </Applications>
 
