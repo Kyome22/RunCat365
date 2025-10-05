@@ -12,40 +12,13 @@
 //    See the License for the specific language governing permissions and
 //    limitations under the License.
 
+using System.Text.RegularExpressions;
+
 namespace RunCat365
 {
-    enum Drive
-    {
-        C,
-        D
-    }
-
-    internal static class DriveExtension
-    {
-        internal static string GetString(this Drive drive)
-        {
-            return drive switch
-            {
-                Drive.C => "C Drive",
-                Drive.D => "D Drive",
-                _ => "",
-            };
-        }
-
-        internal static Drive? CreateFromString(string? value)
-        {
-            return value switch
-            {
-                "C:\\" => Drive.C,
-                "D:\\" => Drive.D,
-                _ => null,
-            };
-        }
-    }
-
     struct StorageInfo
     {
-        internal Drive Drive { get; set; }
+        internal string Drive { get; set; }
         internal long TotalSize { get; set; }
         internal long AvailableSpaceSize { get; set; }
         internal long UsedSpaceSize { get; set; }
@@ -69,7 +42,7 @@ namespace RunCat365
                 var parentPrefix = isLastItem ? "   └─ " : "   ├─ ";
                 var childIndent = isLastItem ? "      " : "   │  ";
                 var percentage = ((double)info.UsedSpaceSize / info.TotalSize) * 100.0;
-                resultLines.Add($"{parentPrefix}{info.Drive.GetString()}: {percentage:f1}%");
+                resultLines.Add($"{parentPrefix}{info.Drive} {percentage:f1}%");
                 resultLines.Add($"{childIndent}   ├─ Used: {info.UsedSpaceSize.ToByteFormatted()}");
                 resultLines.Add($"{childIndent}   └─ Available: {info.AvailableSpaceSize.ToByteFormatted()}");
             }
@@ -88,15 +61,16 @@ namespace RunCat365
         {
             storageInfoList.Clear();
             var allDrives = DriveInfo.GetDrives();
+            var regex = new Regex(@"^[A-Z]:\\$");
             foreach (DriveInfo driveInfo in allDrives)
             {
-                if (driveInfo.IsReady && DriveExtension.CreateFromString(driveInfo.Name) is Drive drive)
+                if (driveInfo.IsReady && regex.IsMatch(driveInfo.Name))
                 {
                     try
                     {
                         var storageInfo = new StorageInfo
                         {
-                            Drive = drive,
+                            Drive = driveInfo.Name,
                             TotalSize = driveInfo.TotalSize,
                             AvailableSpaceSize = driveInfo.AvailableFreeSpace,
                             UsedSpaceSize = driveInfo.TotalSize - driveInfo.AvailableFreeSpace
