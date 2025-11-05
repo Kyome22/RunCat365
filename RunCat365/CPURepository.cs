@@ -13,6 +13,8 @@
 //    limitations under the License.
 
 using System.Diagnostics;
+using System.Security.Principal;
+using LHM = LibreHardwareMonitor.Hardware;
 
 namespace RunCat365
 {
@@ -22,15 +24,19 @@ namespace RunCat365
         internal float User { get; set; }
         internal float Kernel { get; set; }
         internal float Idle { get; set; }
+        internal float Temperature { get; set; }
     }
 
     internal static class CPUInfoExtension
     {
         internal static string GetDescription(this CPUInfo cpuInfo)
         {
-            return $"CPU: {cpuInfo.Total:f1}%";
-        }
+            // If the temperature is 0, do not display ‘Temp’
+            if (cpuInfo.Temperature <= 0)
+                return $"CPU: {cpuInfo.Total:f1}%";
 
+            return $"CPU: {cpuInfo.Total:f1}% | Temp: {cpuInfo.Temperature:f1}°C";
+        }
         internal static List<string> GenerateIndicator(this CPUInfo cpuInfo)
         {
             var resultLines = new List<string>
@@ -40,6 +46,10 @@ namespace RunCat365
                 $"   ├─ Kernel: {cpuInfo.Kernel:f1}%",
                 $"   └─ Available: {cpuInfo.Idle:f1}%"
             };
+
+            if (cpuInfo.Temperature > 0)
+                resultLines.Add($"   └─ Temp: {cpuInfo.Temperature:f1}°C");
+
             return resultLines;
         }
     }
@@ -52,6 +62,19 @@ namespace RunCat365
         private readonly PerformanceCounter idleCounter;
         private readonly List<CPUInfo> cpuInfoList = [];
         private const int CPU_INFO_LIST_LIMIT_SIZE = 5;
+
+        // Added additional support for motherboard and GPU (helps expose CPU sensors on some systems)
+        private static readonly LHM.Computer computer = new LHM.Computer
+        {
+            IsCpuEnabled = true,
+            IsMotherboardEnabled = true,
+            IsGpuEnabled = true
+        };
+
+        static CPURepository()
+        {
+            computer.Open();
+        }
 
         internal CPURepository()
         {
@@ -74,6 +97,7 @@ namespace RunCat365
             var user = Math.Min(100, userCounter.NextValue());
             var kernel = Math.Min(100, kernelCounter.NextValue());
             var idle = Math.Min(100, idleCounter.NextValue());
+            var temperature = GetCPUTemperature();
 
             var cpuInfo = new CPUInfo
             {
@@ -81,6 +105,7 @@ namespace RunCat365
                 User = user,
                 Kernel = kernel,
                 Idle = idle,
+                Temperature = temperature,
             };
 
             cpuInfoList.Add(cpuInfo);
@@ -99,8 +124,61 @@ namespace RunCat365
                 Total = cpuInfoList.Average(x => x.Total),
                 User = cpuInfoList.Average(x => x.User),
                 Kernel = cpuInfoList.Average(x => x.Kernel),
-                Idle = cpuInfoList.Average(x => x.Idle)
+                Idle = cpuInfoList.Average(x => x.Idle),
+                Temperature = cpuInfoList.Average(x => x.Temperature)
             };
+        }
+
+        // Only works if run as administrator
+        public static float GetCPUTemperature()
+        {
+            if (!IsRunningAsAdministrator())
+                return 0;
+
+            if (computer == null)
+                return 0;
+
+            foreach (var hardware in computer.Hardware)
+            {
+                if (hardware.HardwareType == LHM.HardwareType.Cpu)
+                {
+                    // Updates hardware and sub-hardware
+                    hardware.Update();
+                    foreach (var subHardware in hardware.SubHardware)
+                        subHardware.Update();
+
+                    // Collects all sensors (CPU + subcomponents)
+                    var sensors = hardware.Sensors.Concat(hardware.SubHardware.SelectMany(h => h.Sensors));
+
+                    var temps = new List<float>();
+                    foreach (var sensor in sensors)
+                    {
+                        // Filter by temperature sensors and check for null
+                        if (sensor.SensorType == LHM.SensorType.Temperature && sensor.Value != null)
+                        {
+                            // Get the CPU temperature
+                            if (sensor.Name.ToLower().Contains("package"))
+                                return Convert.ToSingle(sensor.Value);
+
+                            temps.Add(Convert.ToSingle(sensor.Value));
+                        }
+                    }
+
+                    if (temps.Count > 0)
+                    {
+                        return temps.Average();
+                    }
+                }
+            }
+
+            return 0;
+        }
+
+        private static bool IsRunningAsAdministrator()
+        {
+            using var identity = WindowsIdentity.GetCurrent();
+            var principal = new WindowsPrincipal(identity);
+            return principal.IsInRole(WindowsBuiltInRole.Administrator);
         }
 
         internal void Close()
