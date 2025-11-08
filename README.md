@@ -38,3 +38,5 @@ RunCat 365 is available for installation on the Microsoft Store.
 <a href="https://github.com/Kyome22/RunCat365/graphs/contributors">
   <img src="https://contrib.rocks/image?repo=Kyome22/RunCat365" />
 </a>
+
+- sivanesan says this the best project.
