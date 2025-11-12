@@ -12,6 +12,7 @@
 //    See the License for the specific language governing permissions and
 //    limitations under the License.
 
+using Microsoft.Win32;
 using RunCat365.Properties;
 using System.ComponentModel;
 
@@ -20,11 +21,13 @@ namespace RunCat365
     internal class ContextMenuManager : IDisposable
     {
         private readonly CustomToolStripMenuItem systemInfoMenu = new();
-        private readonly NotifyIcon notifyIcon = new();
+        private NotifyIcon notifyIcon = new();
         private readonly List<Icon> icons = [];
         private readonly object iconLock = new();
         private int current = 0;
         private EndlessGameForm? endlessGameForm;
+        private string iconText = "";
+        private ContextMenuStrip contextMenuStrip;
 
         internal ContextMenuManager(
             Func<Runner> getRunner,
@@ -128,7 +131,7 @@ namespace RunCat365
             var exitMenu = new CustomToolStripMenuItem("Exit");
             exitMenu.Click += (sender, e) => onExit();
 
-            var contextMenuStrip = new ContextMenuStrip(new Container());
+            contextMenuStrip = new ContextMenuStrip(new Container());
             contextMenuStrip.Items.AddRange(
                 systemInfoMenu,
                 new ToolStripSeparator(),
@@ -144,10 +147,38 @@ namespace RunCat365
 
             SetIcons(getSystemTheme(), getManualTheme(), getRunner());
 
-            notifyIcon.Text = "-";
-            notifyIcon.Icon = icons[0];
-            notifyIcon.Visible = true;
-            notifyIcon.ContextMenuStrip = contextMenuStrip;
+            notifyIcon = CreateInitialNotifyIcon();
+
+            SystemEvents.PowerModeChanged += (_, e) =>
+            {
+                if (e.Mode == PowerModes.Resume)
+                {
+                    RecreateNotifyIcon();
+                }
+            };
+        }
+
+        private NotifyIcon CreateInitialNotifyIcon()
+        {
+            return  new()
+            {
+                Text = iconText,
+                Icon = icons[0],
+                Visible = true,
+                ContextMenuStrip = contextMenuStrip
+            };
+        }
+
+        private void RecreateNotifyIcon()
+        {
+            try
+            {
+                notifyIcon.Dispose();
+            } catch { }
+
+            notifyIcon = CreateInitialNotifyIcon();
+            notifyIcon.Text = iconText;
+            notifyIcon.Icon = icons[current];
         }
 
         private static void HandleMenuItemSelection<T>(
@@ -262,7 +293,15 @@ namespace RunCat365
 
         internal void SetNotifyIconText(string text)
         {
-            notifyIcon.Text = text;
+            iconText = text;
+            try
+            {
+                notifyIcon.Text = text;
+            }
+            catch(ObjectDisposedException)
+            {
+                RecreateNotifyIcon();
+            }
         }
 
         internal void HideNotifyIcon()
@@ -286,12 +325,8 @@ namespace RunCat365
                     icons.Clear();
                 }
 
-                if (notifyIcon is not null)
-                {
-                    notifyIcon.ContextMenuStrip?.Dispose();
-                    notifyIcon.Dispose();
-                }
-
+                notifyIcon?.Dispose();
+                contextMenuStrip?.Dispose();
                 endlessGameForm?.Dispose();
             }
         }
