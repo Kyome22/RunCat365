@@ -49,6 +49,7 @@ namespace RunCat365
         private readonly CPURepository cpuRepository;
         private readonly MemoryRepository memoryRepository;
         private readonly StorageRepository storageRepository;
+        private readonly TopProcessRepository topProcessRepository;
         private readonly LaunchAtStartupManager launchAtStartupManager;
         private readonly ContextMenuManager contextMenuManager;
         private readonly FormsTimer fetchTimer;
@@ -71,6 +72,7 @@ namespace RunCat365
             memoryRepository = new MemoryRepository();
             storageRepository = new StorageRepository();
             launchAtStartupManager = new LaunchAtStartupManager();
+            topProcessRepository=new TopProcessRepository();
 
             contextMenuManager = new ContextMenuManager(
                 () => runner,
@@ -177,7 +179,8 @@ namespace RunCat365
         private void FetchSystemInfo(
             CPUInfo cpuInfo,
             MemoryInfo memoryInfo,
-            List<StorageInfo> storageValue
+            List<StorageInfo> storageValue,
+            TopProcess topProcess
         )
         {
             contextMenuManager.SetNotifyIconText(cpuInfo.GetDescription());
@@ -186,6 +189,9 @@ namespace RunCat365
             systemInfoValues.AddRange(cpuInfo.GenerateIndicator());
             systemInfoValues.AddRange(memoryInfo.GenerateIndicator());
             systemInfoValues.AddRange(storageValue.GenerateIndicator());
+            
+            systemInfoValues.AddRange(topProcess.GenerateIndicator());
+    
             contextMenuManager.SetSystemInfoMenuText(string.Join("\n", [.. systemInfoValues]));
         }
 
@@ -206,7 +212,8 @@ namespace RunCat365
             var cpuInfo = cpuRepository.Get();
             var memoryInfo = memoryRepository.Get();
             var storageInfo = storageRepository.Get();
-            FetchSystemInfo(cpuInfo, memoryInfo, storageInfo);
+            var topProcessInfo=topProcessRepository.Get();
+            FetchSystemInfo(cpuInfo, memoryInfo, storageInfo,topProcessInfo);
 
             animateTimer.Stop();
             animateTimer.Interval = CalculateInterval(cpuInfo.Total);
