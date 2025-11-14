@@ -30,12 +30,21 @@ namespace RunCat365
         {
             var resultLines = new List<string>
             {
-                $"Memory: {memoryInfo.MemoryLoad}%",
+                $"Memory: {memoryInfo.MemoryLoad}% {GenerateMemoryBar(memoryInfo.MemoryLoad)}",
                 $"   ├─ Total: {memoryInfo.TotalMemory.ToByteFormatted()}",
                 $"   ├─ Used: {memoryInfo.UsedMemory.ToByteFormatted()}",
                 $"   └─ Available: {memoryInfo.AvailableMemory.ToByteFormatted()}"
             };
             return resultLines;
+        }
+
+        private static string GenerateMemoryBar(uint usagePercent)
+        {
+            const int barLength = 10;
+            int filledLength = (int)(barLength * usagePercent / 100.0f);
+            string filled = new string('▣', filledLength);
+            string empty = new string('□', barLength - filledLength);
+            return filled + empty;
         }
     }
 

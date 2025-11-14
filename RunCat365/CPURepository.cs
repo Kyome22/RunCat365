@@ -35,12 +35,21 @@ namespace RunCat365
         {
             var resultLines = new List<string>
             {
-                $"CPU: {cpuInfo.Total:f1}%",
+                $"CPU: {cpuInfo.Total:f1}% {GenerateCpuBar(cpuInfo.Total)}",
                 $"   ├─ User: {cpuInfo.User:f1}%",
                 $"   ├─ Kernel: {cpuInfo.Kernel:f1}%",
                 $"   └─ Available: {cpuInfo.Idle:f1}%"
             };
             return resultLines;
+        }
+
+        private static string GenerateCpuBar(float usagePercent)
+        {
+            const int barLength = 10;
+            int filledLength = (int)(barLength * usagePercent / 100.0f);
+            string filled = new string('▣', filledLength);
+            string empty = new string('□', barLength - filledLength);
+            return filled + empty;
         }
     }
 
