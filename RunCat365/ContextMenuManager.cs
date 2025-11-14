@@ -14,6 +14,7 @@
 
 using RunCat365.Properties;
 using System.ComponentModel;
+using Windows.ApplicationModel;
 
 namespace RunCat365
 {
@@ -44,20 +45,30 @@ namespace RunCat365
             systemInfoMenu.Enabled = false;
 
             var taskManagerMenu = new CustomToolStripMenuItem("Open Task Manager");
-            taskManagerMenu.Click += (sender, e) =>
+            taskManagerMenu.Click += async (sender, e) =>
             {
                 try
                 {
-                    System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
-                    {
-                        FileName = "taskmgr",
-                        UseShellExecute = true
-                    });
+                    var fullTrustProcess = FullTrustProcessLauncher.LaunchFullTrustProcessForCurrentAppAsync(
+                        "-fulltrust"
+                    );
+                    await fullTrustProcess;
                 }
-                catch (Exception ex)
+                catch
                 {
-                    MessageBox.Show($"Failed to open Task Manager:\n{ex.Message}", 
-                        "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    try
+                    {
+                        System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
+                        {
+                            FileName = "taskmgr",
+                            UseShellExecute = true
+                        });
+                    }
+                    catch (Exception localEx)
+                    {
+                        MessageBox.Show($"Failed to open Task Manager:\n{localEx.Message}", 
+                            "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
                 }
             };
 
