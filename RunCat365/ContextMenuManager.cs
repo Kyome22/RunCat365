@@ -43,6 +43,24 @@ namespace RunCat365
             systemInfoMenu.Text = "-\n-\n-\n-\n-";
             systemInfoMenu.Enabled = false;
 
+            var taskManagerMenu = new CustomToolStripMenuItem("Open Task Manager");
+            taskManagerMenu.Click += (sender, e) =>
+            {
+                try
+                {
+                    System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
+                    {
+                        FileName = "taskmgr",
+                        UseShellExecute = true
+                    });
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Failed to open Task Manager:\n{ex.Message}", 
+                        "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            };
+
             var runnersMenu = new CustomToolStripMenuItem("Runners");
             runnersMenu.SetupSubMenusFromEnum<Runner>(
                 r => r.GetString(),
@@ -131,6 +149,8 @@ namespace RunCat365
             var contextMenuStrip = new ContextMenuStrip(new Container());
             contextMenuStrip.Items.AddRange(
                 systemInfoMenu,
+                new ToolStripSeparator(),
+                taskManagerMenu,
                 new ToolStripSeparator(),
                 runnersMenu,
                 new ToolStripSeparator(),
