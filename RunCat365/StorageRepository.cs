@@ -49,6 +49,17 @@ namespace RunCat365
         internal long TotalSize { get; set; }
         internal long AvailableSpaceSize { get; set; }
         internal long UsedSpaceSize { get; set; }
+        public double UsagePercentage
+        {
+            get
+            {
+                if (TotalSize == 0)
+                {
+                    return 0.0;
+                }
+                return ((double)UsedSpaceSize / TotalSize) * 100.0;
+            }
+        }
     }
 
     internal static class StorageInfoExtension

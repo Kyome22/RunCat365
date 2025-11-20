@@ -18,9 +18,12 @@ using System.ComponentModel;
 namespace RunCat365
 {
     internal class ContextMenuManager : IDisposable
-    {
-        private readonly CustomToolStripMenuItem systemInfoMenu = new();
-        private readonly NotifyIcon notifyIcon = new();
+    {        
+        //private readonly CustomToolStripMenuItem systemInfoMenu = new();
+        private readonly ToolStripMenuItem cpuMenuItem = new();
+        private readonly ToolStripMenuItem memoryMenuItem = new();
+        private readonly ToolStripMenuItem storageMenuItem = new();
+        private NotifyIcon notifyIcon = new();
         private readonly List<Icon> icons = [];
         private readonly object iconLock = new();
         private int current = 0;
@@ -40,8 +43,6 @@ namespace RunCat365
             Action onExit
         )
         {
-            systemInfoMenu.Text = "-\n-\n-\n-\n-";
-            systemInfoMenu.Enabled = false;
 
             var runnersMenu = new CustomToolStripMenuItem("Runners");
             runnersMenu.SetupSubMenusFromEnum<Runner>(
@@ -130,7 +131,9 @@ namespace RunCat365
 
             var contextMenuStrip = new ContextMenuStrip(new Container());
             contextMenuStrip.Items.AddRange(
-                systemInfoMenu,
+                cpuMenuItem,
+                memoryMenuItem,
+                storageMenuItem,
                 new ToolStripSeparator(),
                 runnersMenu,
                 new ToolStripSeparator(),
@@ -255,14 +258,42 @@ namespace RunCat365
             }
         }
 
-        internal void SetSystemInfoMenuText(string text)
+        internal void SetSystemInfoCpuMenuText(string text)
         {
-            systemInfoMenu.Text = text;
+            cpuMenuItem.Text = text;
+        }
+        internal void SetSystemInfoMemoryMenuText(string text)
+        {
+            memoryMenuItem.Text = text;
+        }
+        internal void SetSystemInfoStorageMenuText(string text)
+        {
+            storageMenuItem.Text = text;
         }
 
         internal void SetNotifyIconText(string text)
         {
-            notifyIcon.Text = text;
+            try
+            {
+                notifyIcon.Text = text;
+            }
+            catch (ObjectDisposedException e)
+            {
+                notifyIcon = new NotifyIcon();
+                notifyIcon.Text = text;
+            }
+        }
+        internal void SetSystemInfoCpuMenuColor(Color color)
+        {
+            cpuMenuItem.ForeColor = color;
+        }
+        internal void SetSystemInfoMemoryMenuColor(Color color)
+        {
+            memoryMenuItem.ForeColor = color;
+        }
+        internal void SetSystemInfoStorageMenuColor(Color color)
+        {
+            storageMenuItem.ForeColor = color;
         }
 
         internal void HideNotifyIcon()
