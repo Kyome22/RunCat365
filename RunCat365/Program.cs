@@ -57,6 +57,7 @@ namespace RunCat365
         private Theme manualTheme = Theme.System;
         private FPSMaxLimit fpsMaxLimit = FPSMaxLimit.FPS40;
         private int fetchCounter = 5;
+        private int cpuRunCounter = 0;
 
         public RunCat365ApplicationContext()
         {
@@ -182,11 +183,29 @@ namespace RunCat365
         {
             contextMenuManager.SetNotifyIconText(cpuInfo.GetDescription());
 
-            var systemInfoValues = new List<string>();
-            systemInfoValues.AddRange(cpuInfo.GenerateIndicator());
-            systemInfoValues.AddRange(memoryInfo.GenerateIndicator());
-            systemInfoValues.AddRange(storageValue.GenerateIndicator());
-            contextMenuManager.SetSystemInfoMenuText(string.Join("\n", [.. systemInfoValues]));
+            // Seperate each context menu 
+            contextMenuManager.SetSystemInfoCpuMenuText(string.Join("\n", cpuInfo.GenerateIndicator()));
+            contextMenuManager.SetSystemInfoMemoryMenuText(string.Join("\n", memoryInfo.GenerateIndicator()));
+            contextMenuManager.SetSystemInfoStorageMenuText(string.Join("\n", storageValue.GenerateIndicator()));
+
+            if (cpuInfo.Total > 80)
+            {
+                cpuRunCounter += 1;
+                if (cpuRunCounter >= 12)
+                    contextMenuManager.SetSystemInfoCpuMenuColor (Color.Red);
+            }
+            else
+                contextMenuManager.SetSystemInfoCpuMenuColor(SystemColors.ControlText);
+
+            if (memoryInfo.MemoryLoad > 80)
+                contextMenuManager.SetSystemInfoMemoryMenuColor(Color.Red);
+            else
+                contextMenuManager.SetSystemInfoMemoryMenuColor(SystemColors.ControlText);
+
+            if (storageValue[0].UsagePercentage > 90.0)
+                contextMenuManager.SetSystemInfoStorageMenuColor(Color.Red);
+            else
+                contextMenuManager.SetSystemInfoStorageMenuColor(SystemColors.ControlText);
         }
 
         private int CalculateInterval(float cpuTotalValue)
