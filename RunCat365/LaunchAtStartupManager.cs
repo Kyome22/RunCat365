@@ -14,6 +14,8 @@
 
 using Microsoft.Win32;
 using Windows.ApplicationModel;
+using RunCat365.Properties;
+using System.Globalization;
 
 namespace RunCat365
 {
@@ -38,6 +40,17 @@ namespace RunCat365
         public bool SetEnabled(bool enabled)
         {
             startupTask ??= Task.Run(async () => await StartupTask.GetAsync("RunCatStartup")).Result;
+            if (startupTask is null) return false;
+
+            var culture = CultureInfo.CurrentUICulture;
+
+            var activateFailMessage = Resources.ResourceManager.GetString("Error.LaunchActivateFail", culture) ?? 
+                                      "Launch at Startup could not be activated.";
+            var disabledByUserMessage = Resources.ResourceManager.GetString("Error.LaunchDisabledByUser", culture) ??
+                                        "Launch at startup was disabled by the user, enable it in Task Manager > Startup, search RunCat 365 and enable it.";
+            var disabledByPolicyMessage = Resources.ResourceManager.GetString("Error.LaunchDisabledByPolicy", culture) ??
+                                          "Launch at startup was disabled by policy.";
+                                          
             if (enabled)
             {
                 if (startupTask.State == StartupTaskState.Enabled) startupTask.Disable();
@@ -57,12 +70,12 @@ namespace RunCat365
                         }
                         else
                         {
-                            throw new InvalidOperationException("Launch at Startup could not be activated.");
+                            throw new InvalidOperationException(activateFailMessage);
                         }
                     case StartupTaskState.DisabledByUser:
-                        throw new InvalidOperationException("Launch at startup was disabled by the user, enable it in Task Manager > Startup, search RunCat 365 and enable it.");
+                        throw new InvalidOperationException(disabledByUserMessage);
                     case StartupTaskState.DisabledByPolicy:
-                        throw new InvalidOperationException("Launch at startup was disabled by policy.");
+                        throw new InvalidOperationException(disabledByPolicyMessage);
                     default:
                         return false;
                 }

@@ -12,6 +12,9 @@
 //    See the License for the specific language governing permissions and
 //    limitations under the License.
 
+using System.Globalization;
+using RunCat365.Properties;
+
 namespace RunCat365
 {
     enum Theme
@@ -24,6 +27,16 @@ namespace RunCat365
     internal static class ThemeExtension
     {
         internal static string GetString(this Theme theme)
+        {
+            return theme switch
+            {
+                Theme.System => Resources.ResourceManager.GetString("Theme.System", CultureInfo.CurrentUICulture) ?? "System",
+                Theme.Light => Resources.ResourceManager.GetString("Theme.Light", CultureInfo.CurrentUICulture) ?? "Light",
+                Theme.Dark => Resources.ResourceManager.GetString("Theme.Dark", CultureInfo.CurrentUICulture) ?? "Dark",
+                _ => "",
+            };
+        }
+        internal static string GetResourceName(this Theme theme)
         {
             return theme switch
             {

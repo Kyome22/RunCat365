@@ -14,6 +14,7 @@
 
 using RunCat365.Properties;
 using System.ComponentModel;
+using System.Globalization;
 
 namespace RunCat365
 {
@@ -43,7 +44,9 @@ namespace RunCat365
             systemInfoMenu.Text = "-\n-\n-\n-\n-";
             systemInfoMenu.Enabled = false;
 
-            var runnersMenu = new CustomToolStripMenuItem("Runners");
+            var runnersMenu = new CustomToolStripMenuItem(
+                Resources.ResourceManager.GetString("Menu.Runners", CultureInfo.CurrentUICulture) ?? "Runners"
+            );
             runnersMenu.SetupSubMenusFromEnum<Runner>(
                 r => r.GetString(),
                 (parent, sender, e) =>
@@ -60,7 +63,9 @@ namespace RunCat365
                 r => GetRunnerThumbnailBitmap(getSystemTheme(), r)
             );
 
-            var themeMenu = new CustomToolStripMenuItem("Theme");
+            var themeMenu = new CustomToolStripMenuItem(
+                Resources.ResourceManager.GetString("Menu.Theme", CultureInfo.CurrentUICulture) ?? "Theme"
+            );
             themeMenu.SetupSubMenusFromEnum<Theme>(
                 t => t.GetString(),
                 (parent, sender, e) =>
@@ -77,7 +82,9 @@ namespace RunCat365
                 _ => null
             );
 
-            var fpsMaxLimitMenu = new CustomToolStripMenuItem("FPS Max Limit");
+            var fpsMaxLimitMenu = new CustomToolStripMenuItem(
+                Resources.ResourceManager.GetString("Menu.FPSMaxLimit", CultureInfo.CurrentUICulture) ?? "FPS Max Limit"
+            );
             fpsMaxLimitMenu.SetupSubMenusFromEnum<FPSMaxLimit>(
                 f => f.GetString(),
                 (parent, sender, e) =>
@@ -93,22 +100,28 @@ namespace RunCat365
                 _ => null
             );
 
-            var launchAtStartupMenu = new CustomToolStripMenuItem("Launch at startup")
+            var launchAtStartupMenu = new CustomToolStripMenuItem(
+                Resources.ResourceManager.GetString("Menu.LaunchAtStartup", CultureInfo.CurrentUICulture) ?? "Launch at startup"
+            )
             {
                 Checked = getLaunchAtStartup()
             };
             launchAtStartupMenu.Click += (sender, e) => HandleStartupMenuClick(sender, toggleLaunchAtStartup);
-
-            var settingsMenu = new CustomToolStripMenuItem("Settings");
+            
+            var settingsMenu = new CustomToolStripMenuItem(
+                Resources.ResourceManager.GetString("Menu.Settings", CultureInfo.CurrentUICulture) ?? "Settings"
+            );
             settingsMenu.DropDownItems.AddRange(
                 themeMenu,
                 fpsMaxLimitMenu,
                 launchAtStartupMenu
             );
 
-            var endlessGameMenu = new CustomToolStripMenuItem("Endless Game");
+            var endlessGameMenu = new CustomToolStripMenuItem(
+                Resources.ResourceManager.GetString("Menu.EndlessGame", CultureInfo.CurrentUICulture) ?? "Endless Game"
+            );
             endlessGameMenu.Click += (sender, e) => ShowOrActivateGameWindow(getSystemTheme);
-
+            
             var appVersionMenu = new CustomToolStripMenuItem(
                 $"{Application.ProductName} v{Application.ProductVersion}"
             )
@@ -116,16 +129,22 @@ namespace RunCat365
                 Enabled = false
             };
 
-            var repositoryMenu = new CustomToolStripMenuItem("Open Repository");
+            var repositoryMenu = new CustomToolStripMenuItem(
+                Resources.ResourceManager.GetString("Menu.OpenRepository", CultureInfo.CurrentUICulture) ?? "Open Repository"
+            );
             repositoryMenu.Click += (sender, e) => openRepository();
 
-            var informationMenu = new CustomToolStripMenuItem("Information");
+            var informationMenu = new CustomToolStripMenuItem(
+                Resources.ResourceManager.GetString("Menu.Information", CultureInfo.CurrentUICulture) ?? "Information"
+            );
             informationMenu.DropDownItems.AddRange(
                 appVersionMenu,
                 repositoryMenu
             );
 
-            var exitMenu = new CustomToolStripMenuItem("Exit");
+            var exitMenu = new CustomToolStripMenuItem(
+                Resources.ResourceManager.GetString("Menu.Exit", CultureInfo.CurrentUICulture) ?? "Exit"
+            );
             exitMenu.Click += (sender, e) => onExit();
 
             var contextMenuStrip = new ContextMenuStrip(new Container());
@@ -145,11 +164,18 @@ namespace RunCat365
             SetIcons(getSystemTheme(), getManualTheme(), getRunner());
 
             notifyIcon.Text = "-";
-            notifyIcon.Icon = icons[0];
+            if (icons.Count > 0) 
+            {
+                notifyIcon.Icon = icons[0];
+            }
+            else
+            {
+                notifyIcon.Icon = Resources.AppIcon;
+            }
+
             notifyIcon.Visible = true;
             notifyIcon.ContextMenuStrip = contextMenuStrip;
         }
-
         private static void HandleMenuItemSelection<T>(
             ToolStripMenuItem parentMenu,
             object? sender,
@@ -172,15 +198,14 @@ namespace RunCat365
 
         private static Bitmap? GetRunnerThumbnailBitmap(Theme systemTheme, Runner runner)
         {
-            var iconName = $"{systemTheme.GetString()}_{runner.GetString()}_0".ToLower();
+            var iconName = $"{systemTheme.GetResourceName()}_{runner.GetResourceName()}_0".ToLower();
             var obj = Resources.ResourceManager.GetObject(iconName);
             return obj is Icon icon ? icon.ToBitmap() : null;
         }
-
         internal void SetIcons(Theme systemTheme, Theme manualTheme, Runner runner)
         {
-            var prefix = (manualTheme == Theme.System ? systemTheme : manualTheme).GetString();
-            var runnerName = runner.GetString();
+            var prefix = (manualTheme == Theme.System ? systemTheme : manualTheme).GetResourceName();
+            var runnerName = runner.GetResourceName();
             var rm = Resources.ResourceManager;
             var capacity = runner.GetFrameNumber();
             var list = new List<Icon>(capacity);
@@ -191,16 +216,14 @@ namespace RunCat365
                 if (icon is null) continue;
                 list.Add((Icon)icon);
             }
-
             lock (iconLock)
             {
                 icons.ForEach(icon => icon.Dispose());
-                icons.Clear();
-                icons.AddRange(list);
-                current = 0;
+                icons.Clear();                     
+                icons.AddRange(list);                  
+                current = 0;                          
             }
         }
-
         private static void HandleStartupMenuClick(object? sender, Func<bool, bool> toggleLaunchAtStartup)
         {
             if (sender is null) return;
@@ -214,9 +237,9 @@ namespace RunCat365
             }
             catch (InvalidOperationException ex)
             {
-                MessageBox.Show(ex.Message, "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                var warningTitle = Resources.ResourceManager.GetString("Error.Warning", CultureInfo.CurrentUICulture) ?? "Warning";
+                MessageBox.Show(ex.Message, warningTitle, MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
-
         }
 
         private void ShowOrActivateGameWindow(Func<Theme> getSystemTheme)
@@ -238,10 +261,11 @@ namespace RunCat365
 
         internal void ShowBalloonTip()
         {
-            var message = "App has launched. " +
-                "If the icon is not on the taskbar, it has been omitted, " +
-                "so please move it manually and pin it.";
-            notifyIcon.ShowBalloonTip(5000, "RunCat 365", message, ToolTipIcon.Info);
+            var message = Resources.ResourceManager.GetString("Notify.Launched", CultureInfo.CurrentUICulture) ?? 
+                          "App has launched. If the icon is not on the taskbar, it has been omitted, so please move it manually and pin it.";
+            var title = Resources.ResourceManager.GetString("Notify.Title", CultureInfo.CurrentUICulture) ?? "RunCat 365";
+
+            notifyIcon.ShowBalloonTip(5000, title, message, ToolTipIcon.Info);
         }
 
         internal void AdvanceFrame()

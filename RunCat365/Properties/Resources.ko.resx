@@ -1,0 +1,478 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="AppIcon" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\app_icon.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  
+  <data name="dark_cat_0" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\runners\cat\dark_cat_0.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="dark_cat_1" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\runners\cat\dark_cat_1.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="dark_cat_2" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\runners\cat\dark_cat_2.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="dark_cat_3" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\runners\cat\dark_cat_3.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="dark_cat_4" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\runners\cat\dark_cat_4.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="dark_cat_jumping_0" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\game\dark\dark_cat_jumping_0.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="dark_cat_jumping_1" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\game\dark\dark_cat_jumping_1.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="dark_cat_jumping_2" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\game\dark\dark_cat_jumping_2.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="dark_cat_jumping_3" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\game\dark\dark_cat_jumping_3.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="dark_cat_jumping_4" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\game\dark\dark_cat_jumping_4.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="dark_cat_jumping_5" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\game\dark\dark_cat_jumping_5.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="dark_cat_jumping_6" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\game\dark\dark_cat_jumping_6.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="dark_cat_jumping_7" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\game\dark\dark_cat_jumping_7.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="dark_cat_jumping_8" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\game\dark\dark_cat_jumping_8.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="dark_cat_jumping_9" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\game\dark\dark_cat_jumping_9.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="dark_cat_running_0" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\game\dark\dark_cat_running_0.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="dark_cat_running_1" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\game\dark\dark_cat_running_1.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="dark_cat_running_2" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\game\dark\dark_cat_running_2.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="dark_cat_running_3" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\game\dark\dark_cat_running_3.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="dark_cat_running_4" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\game\dark\dark_cat_running_4.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="dark_horse_0" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\runners\horse\dark_horse_0.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="dark_horse_1" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\runners\horse\dark_horse_1.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="dark_horse_2" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\runners\horse\dark_horse_2.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="dark_horse_3" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\runners\horse\dark_horse_3.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="dark_horse_4" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\runners\horse\dark_horse_4.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="dark_horse_5" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\runners\horse\dark_horse_5.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="dark_horse_6" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\runners\horse\dark_horse_6.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="dark_horse_7" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\runners\horse\dark_horse_7.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="dark_horse_8" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\runners\horse\dark_horse_8.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="dark_horse_9" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\runners\horse\dark_horse_9.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="dark_horse_10" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\runners\horse\dark_horse_10.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="dark_horse_11" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\runners\horse\dark_horse_11.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="dark_horse_12" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\runners\horse\dark_horse_12.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="dark_horse_13" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\runners\horse\dark_horse_13.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="dark_parrot_0" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\runners\parrot\dark_parrot_0.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="dark_parrot_1" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\runners\parrot\dark_parrot_1.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="dark_parrot_2" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\runners\parrot\dark_parrot_2.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="dark_parrot_3" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\runners\parrot\dark_parrot_3.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="dark_parrot_4" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\runners\parrot\dark_parrot_4.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="dark_parrot_5" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\runners\parrot\dark_parrot_5.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="dark_parrot_6" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\runners\parrot\dark_parrot_6.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="dark_parrot_7" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\runners\parrot\dark_parrot_7.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="dark_parrot_8" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\runners\parrot\dark_parrot_8.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="dark_parrot_9" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\runners\parrot\dark_parrot_9.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="dark_road_crater" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\game\dark\dark_road_crater.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="dark_road_flat" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\game\dark\dark_road_flat.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="dark_road_hill" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\game\dark\dark_road_hill.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="dark_road_sprout" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\game\dark\dark_road_sprout.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="light_cat_0" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\runners\cat\light_cat_0.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="light_cat_1" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\runners\cat\light_cat_1.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="light_cat_2" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\runners\cat\light_cat_2.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="light_cat_3" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\runners\cat\light_cat_3.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="light_cat_4" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\runners\cat\light_cat_4.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="light_cat_jumping_0" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\game\light\light_cat_jumping_0.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="light_cat_jumping_1" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\game\light\light_cat_jumping_1.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="light_cat_jumping_2" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\game\light\light_cat_jumping_2.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="light_cat_jumping_3" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\game\light\light_cat_jumping_3.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="light_cat_jumping_4" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\game\light\light_cat_jumping_4.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="light_cat_jumping_5" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\game\light\light_cat_jumping_5.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="light_cat_jumping_6" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\game\light\light_cat_jumping_6.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="light_cat_jumping_7" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\game\light\light_cat_jumping_7.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="light_cat_jumping_8" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\game\light\light_cat_jumping_8.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="light_cat_jumping_9" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\game\light\light_cat_jumping_9.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="light_cat_running_0" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\game\light\light_cat_running_0.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="light_cat_running_1" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\game\light\light_cat_running_1.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="light_cat_running_2" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\game\light\light_cat_running_2.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="light_cat_running_3" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\game\light\light_cat_running_3.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="light_cat_running_4" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\game\light\light_cat_running_4.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="light_horse_0" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\runners\horse\light_horse_0.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="light_horse_1" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\runners\horse\light_horse_1.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="light_horse_2" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\runners\horse\light_horse_2.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="light_horse_3" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\runners\horse\light_horse_3.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="light_horse_4" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\runners\horse\light_horse_4.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="light_horse_5" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\runners\horse\light_horse_5.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="light_horse_6" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\runners\horse\light_horse_6.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="light_horse_7" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\runners\horse\light_horse_7.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="light_horse_8" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\runners\horse\light_horse_8.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="light_horse_9" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\runners\horse\light_horse_9.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="light_horse_10" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\runners\horse\light_horse_10.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="light_horse_11" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\runners\horse\light_horse_11.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="light_horse_12" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\runners\horse\light_horse_12.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="light_horse_13" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\runners\horse\light_horse_13.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="light_parrot_0" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\runners\parrot\light_parrot_0.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="light_parrot_1" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\runners\parrot\light_parrot_1.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="light_parrot_2" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\runners\parrot\light_parrot_2.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="light_parrot_3" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\runners\parrot\light_parrot_3.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="light_parrot_4" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\runners\parrot\light_parrot_4.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="light_parrot_5" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\runners\parrot\light_parrot_5.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="light_parrot_6" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\runners\parrot\light_parrot_6.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="light_parrot_7" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\runners\parrot\light_parrot_7.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="light_parrot_8" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\runners\parrot\light_parrot_8.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="light_parrot_9" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\runners\parrot\light_parrot_9.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="light_road_crater" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\game\light\light_road_crater.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="light_road_flat" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\game\light\light_road_flat.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="light_road_hill" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\game\light\light_road_hill.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="light_road_sprout" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\game\light\light_road_sprout.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Menu.Runners" xml:space="preserve">
+    <value>러너</value>
+  </data>
+  <data name="Menu.Theme" xml:space="preserve">
+    <value>테마</value>
+  </data>
+  <data name="Menu.FPSMaxLimit" xml:space="preserve">
+    <value>최대 FPS 제한</value>
+  </data>
+  <data name="Menu.LaunchAtStartup" xml:space="preserve">
+    <value>시작 프로그램에서 실행</value>
+  </data>
+  <data name="Menu.Settings" xml:space="preserve">
+    <value>설정</value>
+  </data>
+  <data name="Menu.EndlessGame" xml:space="preserve">
+    <value>끝없는 달리기 게임</value>
+  </data>
+  <data name="Menu.OpenRepository" xml:space="preserve">
+    <value>저장소 열기</value>
+  </data>
+  <data name="Menu.Information" xml:space="preserve">
+    <value>정보</value>
+  </data>
+  <data name="Menu.Exit" xml:space="preserve">
+    <value>종료</value>
+  </data>
+  <data name="Theme.System" xml:space="preserve">
+    <value>시스템 설정</value>
+  </data>
+  <data name="Theme.Light" xml:space="preserve">
+    <value>라이트</value>
+  </data>
+  <data name="Theme.Dark" xml:space="preserve">
+    <value>다크</value>
+  </data>
+  <data name="Runner.Cat" xml:space="preserve">
+    <value>고양이</value>
+  </data>
+  <data name="Runner.Parrot" xml:space="preserve">
+    <value>앵무새</value>
+  </data>
+  <data name="Runner.Horse" xml:space="preserve">
+    <value>말</value>
+  </data>
+  <data name="Info.User" xml:space="preserve">
+    <value>사용자:</value>
+  </data>
+  <data name="Info.Kernel" xml:space="preserve">
+    <value>커널:</value>
+  </data>
+  <data name="Info.Available" xml:space="preserve">
+    <value>사용 가능:</value>
+  </data>
+  <data name="Info.Memory" xml:space="preserve">
+    <value>메모리:</value>
+  </data>
+  <data name="Info.Total" xml:space="preserve">
+    <value>전체:</value>
+  </data>
+  <data name="Info.Used" xml:space="preserve">
+    <value>사용 중:</value>
+  </data>
+  <data name="Info.Storage" xml:space="preserve">
+    <value>저장소:</value>
+  </data>
+  <data name="Game.Title" xml:space="preserve">
+    <value>끝없는 달리기 게임</value>
+  </data>
+  <data name="Game.Score" xml:space="preserve">
+    <value>점수:</value>
+  </data>
+  <data name="Game.PressSpace" xml:space="preserve">
+    <value>스페이스바를 눌러 시작하세요.</value>
+  </data>
+  <data name="Game.GameOver" xml:space="preserve">
+    <value>게임 오버
+
+</value>
+  </data>
+  <data name="Unit.Byte" xml:space="preserve">
+    <value>B</value>
+  </data>
+  <data name="Unit.KiloByte" xml:space="preserve">
+    <value>KB</value>
+  </data>
+  <data name="Unit.MegaByte" xml:space="preserve">
+    <value>MB</value>
+  </data>
+  <data name="Unit.GigaByte" xml:space="preserve">
+    <value>GB</value>
+  </data>
+  <data name="Unit.TeraByte" xml:space="preserve">
+    <value>TB</value>
+  </data>
+  <data name="Error.Warning" xml:space="preserve">
+    <value>경고</value>
+  </data>
+  <data name="Error.LaunchActivateFail" xml:space="preserve">
+    <value>시작 프로그램 활성화에 실패했습니다.</value>
+  </data>
+  <data name="Error.LaunchDisabledByUser" xml:space="preserve">
+    <value>시작 프로그램은 사용자 설정에 의해 비활성화되어 있습니다. 작업 관리자 &gt; 시작 앱에서 'RunCat 365'를 찾아 직접 활성화해야 합니다.</value>
+  </data>
+  <data name="Error.LaunchDisabledByPolicy" xml:space="preserve">
+    <value>시작 프로그램은 정책에 의해 비활성화되어 있습니다.</value>
+  </data>
+  <data name="Notify.Title" xml:space="preserve">
+    <value>RunCat 365</value>
+  </data>
+  <data name="Notify.Launched" xml:space="preserve">
+    <value>앱이 시작되었습니다. 아이콘이 보이지 않는다면, 작업 표시줄 설정에서 'RunCat 365'를 수동으로 이동시키고 고정하십시오.</value>
+  </data>
+  <data name="Road.Flat" xml:space="preserve">
+    <value>평지</value>
+  </data>
+  <data name="Road.Hill" xml:space="preserve">
+    <value>언덕</value>
+  </data>
+  <data name="Road.Crater" xml:space="preserve">
+    <value>분화구</value>
+  </data>
+  <data name="Road.Sprout" xml:space="preserve">
+    <value>새싹</value>
+  </data>
+</root>

@@ -99,8 +99,6 @@ namespace RunCat365
             };
             fetchTimer.Tick += new EventHandler(FetchTick);
             fetchTimer.Start();
-
-            ShowBalloonTip();
         }
 
         private static Theme GetSystemTheme()
@@ -172,6 +170,7 @@ namespace RunCat365
         private void AnimationTick(object? sender, EventArgs e)
         {
             contextMenuManager.AdvanceFrame();
+            ShowBalloonTip();
         }
 
         private void FetchSystemInfo(

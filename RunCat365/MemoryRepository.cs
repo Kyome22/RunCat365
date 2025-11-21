@@ -13,6 +13,8 @@
 //    limitations under the License.
 
 using System.Runtime.InteropServices;
+using System.Globalization;
+using RunCat365.Properties;
 
 namespace RunCat365
 {
@@ -28,12 +30,17 @@ namespace RunCat365
     {
         internal static List<string> GenerateIndicator(this MemoryInfo memoryInfo)
         {
+            var memoryLabel = Resources.ResourceManager.GetString("Info.Memory", CultureInfo.CurrentUICulture) ?? "Memory: ";
+            var totalLabel = Resources.ResourceManager.GetString("Info.Total", CultureInfo.CurrentUICulture) ?? "Total: ";
+            var usedLabel = Resources.ResourceManager.GetString("Info.Used", CultureInfo.CurrentUICulture) ?? "Used: ";
+            var availableLabel = Resources.ResourceManager.GetString("Info.Available", CultureInfo.CurrentUICulture) ?? "Available: ";
+
             var resultLines = new List<string>
             {
-                $"Memory: {memoryInfo.MemoryLoad}%",
-                $"   ├─ Total: {memoryInfo.TotalMemory.ToByteFormatted()}",
-                $"   ├─ Used: {memoryInfo.UsedMemory.ToByteFormatted()}",
-                $"   └─ Available: {memoryInfo.AvailableMemory.ToByteFormatted()}"
+                $"{memoryLabel}{memoryInfo.MemoryLoad}%",
+                $"   ├─ {totalLabel}{memoryInfo.TotalMemory.ToByteFormatted()}",
+                $"   ├─ {usedLabel}{memoryInfo.UsedMemory.ToByteFormatted()}",
+                $"   └─ {availableLabel}{memoryInfo.AvailableMemory.ToByteFormatted()}"
             };
             return resultLines;
         }

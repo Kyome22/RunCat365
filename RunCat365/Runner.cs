@@ -12,6 +12,9 @@
 //    See the License for the specific language governing permissions and
 //    limitations under the License.
 
+using System.Globalization;
+using RunCat365.Properties;
+
 namespace RunCat365
 {
     enum Runner
@@ -27,13 +30,22 @@ namespace RunCat365
         {
             return runner switch
             {
+                Runner.Cat => Resources.ResourceManager.GetString("Runner.Cat", CultureInfo.CurrentUICulture) ?? "Cat",
+                Runner.Parrot => Resources.ResourceManager.GetString("Runner.Parrot", CultureInfo.CurrentUICulture) ?? "Parrot",
+                Runner.Horse => Resources.ResourceManager.GetString("Runner.Horse", CultureInfo.CurrentUICulture) ?? "Horse",
+                _ => "",
+            };
+        }
+        internal static string GetResourceName(this Runner runner)
+        {
+            return runner switch
+            {
                 Runner.Cat => "Cat",
                 Runner.Parrot => "Parrot",
                 Runner.Horse => "Horse",
                 _ => "",
             };
         }
-
         internal static int GetFrameNumber(this Runner runner)
         {
             return runner switch
