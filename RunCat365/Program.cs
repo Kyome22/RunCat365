@@ -92,14 +92,14 @@ namespace RunCat365
             {
                 Interval = ANIMATE_TIMER_DEFAULT_INTERVAL
             };
-            animateTimer.Tick += new EventHandler(AnimationTick);
+            animateTimer.Tick += AnimationTick;
             animateTimer.Start();
 
             fetchTimer = new FormsTimer
             {
                 Interval = FETCH_TIMER_DEFAULT_INTERVAL
             };
-            fetchTimer.Tick += new EventHandler(FetchTick);
+            fetchTimer.Tick += FetchTick;
             fetchTimer.Start();
 
             ShowBalloonTip();
@@ -224,10 +224,19 @@ namespace RunCat365
             {
                 SystemEvents.UserPreferenceChanged -= UserPreferenceChanged;
 
-                animateTimer?.Stop();
-                animateTimer?.Dispose();
-                fetchTimer?.Stop();
-                fetchTimer?.Dispose();
+                if (animateTimer is not null)
+                {
+                    animateTimer.Tick -= AnimationTick;
+                    animateTimer.Stop();
+                    animateTimer.Dispose();
+                }
+
+                if (fetchTimer is not null)
+                {
+                    fetchTimer.Tick -= FetchTick;
+                    fetchTimer.Stop();
+                    fetchTimer.Dispose();
+                }
 
                 cpuRepository?.Close();
 
