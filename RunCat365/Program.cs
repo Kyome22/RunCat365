@@ -58,6 +58,7 @@ namespace RunCat365
         private Theme manualTheme = Theme.System;
         private FPSMaxLimit fpsMaxLimit = FPSMaxLimit.FPS40;
         private int fetchCounter = 5;
+        private int setIconsCounter = 0;
 
         public RunCat365ApplicationContext()
         {
@@ -216,6 +217,14 @@ namespace RunCat365
             animateTimer.Stop();
             animateTimer.Interval = CalculateInterval(cpuInfo.Total);
             animateTimer.Start();
+
+            setIconsCounter++;
+            if (setIconsCounter >= 3)
+            {
+                setIconsCounter = 0;
+                var systemTheme = GetSystemTheme();
+                contextMenuManager.SetIcons(systemTheme, manualTheme, runner);
+            }
         }
 
         protected override void Dispose(bool disposing)
