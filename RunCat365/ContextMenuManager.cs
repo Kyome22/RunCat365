@@ -14,12 +14,15 @@
 
 using RunCat365.Properties;
 using System.ComponentModel;
+using System.Drawing.Imaging;
 
 namespace RunCat365
 {
     internal class ContextMenuManager : IDisposable
     {
         private readonly CustomToolStripMenuItem systemInfoMenu = new();
+        private readonly ToolStripMenuItem memoryMenuItem = new();
+        private readonly MemoryRepository memoryRepository = new MemoryRepository();
         private readonly NotifyIcon notifyIcon = new();
         private readonly List<Icon> icons = [];
         private readonly object iconLock = new();
@@ -185,10 +188,14 @@ namespace RunCat365
             var capacity = runner.GetFrameNumber();
             var list = new List<Icon>(capacity);
             for (int i = 0; i < capacity; i++)
+
             {
+                var memoryLoad = memoryRepository.Get().MemoryLoad;
                 var iconName = $"{prefix}_{runnerName}_{i}".ToLower();
+
                 var icon = rm.GetObject(iconName);
                 if (icon is null) continue;
+                if (memoryLoad > 80) icon = ChangeIconColor((Icon)icon, Color.FromArgb(185, 70, 9));
                 list.Add((Icon)icon);
             }
 
@@ -199,6 +206,50 @@ namespace RunCat365
                 icons.AddRange(list);
                 current = 0;
             }
+        }
+
+        private static Icon ChangeIconColor(Icon icon, Color color) {
+            var original = icon.ToBitmap();
+            var recolored = ChangeIconColor(original, color);
+
+            using var ms = new MemoryStream();
+            recolored.Save(ms, ImageFormat.Png);
+            ms.Position = 0;
+            return Icon.FromHandle(recolored.GetHicon());
+        }
+
+        private static Bitmap ChangeIconColor(Bitmap icon, Color color) {
+            var newIcon = new Bitmap(icon.Width, icon.Height, PixelFormat.Format32bppArgb);
+            using (var g = Graphics.FromImage(newIcon)) g.DrawImage(icon, 0, 0);
+
+            var data = newIcon.LockBits(
+                new Rectangle(0, 0, newIcon.Width, newIcon.Height),
+                ImageLockMode.ReadWrite,
+                PixelFormat.Format32bppArgb
+            );
+
+            unsafe {
+                byte* ptr = (byte*)data.Scan0;
+
+                for (int y = 0; y < newIcon.Height; y++) {
+                    byte* row = ptr + (y * data.Stride);
+
+                    for (int x = 0; x < newIcon.Width; x++) {
+                        byte* pixel = row + (x * 4);
+
+                        var a = pixel[3];
+
+                        if (a > 0) {
+                            pixel[0] = color.B;
+                            pixel[1] = color.G;
+                            pixel[2] = color.R;
+                        }
+                    }
+                }
+            }
+
+            newIcon.UnlockBits(data);
+            return newIcon;
         }
 
         private static void HandleStartupMenuClick(object? sender, Func<bool, bool> toggleLaunchAtStartup)
@@ -258,6 +309,10 @@ namespace RunCat365
         internal void SetSystemInfoMenuText(string text)
         {
             systemInfoMenu.Text = text;
+        }
+        internal void SetSystemInfoMemoryMenuText(string text)
+        {
+            memoryMenuItem.Text = text;
         }
 
         internal void SetNotifyIconText(string text)

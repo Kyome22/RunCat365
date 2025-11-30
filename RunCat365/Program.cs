@@ -216,6 +216,9 @@ namespace RunCat365
             animateTimer.Stop();
             animateTimer.Interval = CalculateInterval(cpuInfo.Total);
             animateTimer.Start();
+
+            var systemTheme = GetSystemTheme();
+            contextMenuManager.SetIcons(systemTheme, manualTheme, runner);
         }
 
         protected override void Dispose(bool disposing)
