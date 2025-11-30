@@ -194,6 +194,7 @@ namespace RunCat365
 
             lock (iconLock)
             {
+                notifyIcon.Icon = null;
                 icons.ForEach(icon => icon.Dispose());
                 icons.Clear();
                 icons.AddRange(list);
