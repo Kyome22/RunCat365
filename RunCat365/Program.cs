@@ -219,11 +219,12 @@ namespace RunCat365
             animateTimer.Start();
 
             setIconsCounter++;
-            if (setIconsCounter >= 3)
+            if (setIconsCounter >= 1)
             {
                 setIconsCounter = 0;
                 var systemTheme = GetSystemTheme();
                 contextMenuManager.SetIcons(systemTheme, manualTheme, runner);
+                contextMenuManager.SetNotifyIconText(cpuInfo.GetDescription());
             }
         }
 
