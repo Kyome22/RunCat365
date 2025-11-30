@@ -194,10 +194,15 @@ namespace RunCat365
 
             lock (iconLock)
             {
+                var oldIcon = notifyIcon.Icon;
                 icons.ForEach(icon => icon.Dispose());
                 icons.Clear();
                 icons.AddRange(list);
                 current = 0;
+                if (oldIcon is not null && icons.Count > 0)
+                {
+                    notifyIcon.Icon = oldIcon;
+                }
             }
         }
 
