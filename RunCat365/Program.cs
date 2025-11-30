@@ -222,9 +222,12 @@ namespace RunCat365
             if (setIconsCounter >= 1)
             {
                 setIconsCounter = 0;
+                animateTimer.Stop();
                 var systemTheme = GetSystemTheme();
                 contextMenuManager.SetIcons(systemTheme, manualTheme, runner);
                 contextMenuManager.SetNotifyIconText(cpuInfo.GetDescription());
+                animateTimer.Interval = CalculateInterval(cpuInfo.Total);
+                animateTimer.Start();
             }
         }
 
