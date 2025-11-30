@@ -263,7 +263,10 @@ namespace RunCat365
 
         internal void SetNotifyIconText(string text)
         {
-            notifyIcon.Text = text;
+            lock (iconLock)
+            {
+                notifyIcon.Text = text;
+            }
         }
 
         internal void HideNotifyIcon()
