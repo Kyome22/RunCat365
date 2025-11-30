@@ -20,7 +20,7 @@ namespace RunCat365
     internal class ContextMenuManager : IDisposable
     {
         private readonly CustomToolStripMenuItem systemInfoMenu = new();
-        private readonly NotifyIcon notifyIcon = new();
+        private NotifyIcon notifyIcon = new();
         private readonly List<Icon> icons = [];
         private readonly object iconLock = new();
         private int current = 0;
@@ -262,7 +262,15 @@ namespace RunCat365
 
         internal void SetNotifyIconText(string text)
         {
-            notifyIcon.Text = text;
+            try
+            {
+                notifyIcon.Text = text;
+            }
+            catch (ObjectDisposedException e)
+            {
+                notifyIcon = new NotifyIcon();
+                notifyIcon.Text = text;
+            }
         }
 
         internal void HideNotifyIcon()
