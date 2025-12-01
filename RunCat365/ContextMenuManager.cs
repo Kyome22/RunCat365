@@ -298,7 +298,7 @@ namespace RunCat365
             {
                 notifyIcon.Text = text;
             }
-            catch(ObjectDisposedException)
+            catch (ObjectDisposedException)
             {
                 RecreateNotifyIcon();
             }
