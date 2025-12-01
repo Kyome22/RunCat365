@@ -103,6 +103,10 @@ namespace RunCat365
             if (firstRoad == Road.Sprout)
             {
                 score += 1;
+                if (score > UserSettings.Default.HighScore)
+                {
+                    UserSettings.Default.HighScore = score;
+                }
             }
             counter = counter > 0 ? counter - 1 : limit - 1;
             if (counter == 0)
@@ -215,7 +219,8 @@ namespace RunCat365
                     Alignment = StringAlignment.Far,
                     LineAlignment = StringAlignment.Center
                 };
-                g.DrawString($"Score: {score}", font15, brush, new Rectangle(20, 0, 560, 50), stringFormat);
+                g.DrawString($"Score:{score}", font15, brush, new Rectangle(20, 0, 560, 50), stringFormat);
+                g.DrawString($"High Score:{UserSettings.Default.HighScore}", font15, brush, new Rectangle(20, 10, 870, 50));
             }
 
             roads.Take(20).Select((road, index) => new { road, index }).ToList().ForEach(
@@ -242,8 +247,16 @@ namespace RunCat365
                 using Brush brush = new SolidBrush(textColor);
                 var message = "Press space to play.";
                 if (status == GameStatus.GameOver)
-                {
-                    message = "GAME OVER\n\n" + message;
+                { 
+                    if (score >= UserSettings.Default.HighScore)
+                    {
+                        SaveRecord(score);
+                        message = "GAME OVER\nNew Record!!\n" + message;
+                    }
+                    else
+                    {
+                        message = "GAME OVER\n\n" + message;
+                    }
                 }
                 var stringFormat = new StringFormat
                 {
@@ -251,7 +264,13 @@ namespace RunCat365
                     LineAlignment = StringAlignment.Center
                 };
                 g.DrawString(message, font18, brush, new Rectangle(0, 0, 600, 250), stringFormat);
+                
             }
+        }
+        private void SaveRecord(int score)
+        {
+            UserSettings.Default.HighScore = score;
+            UserSettings.Default.Save();
         }
     }
 
