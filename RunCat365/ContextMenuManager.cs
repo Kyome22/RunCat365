@@ -160,7 +160,7 @@ namespace RunCat365
 
         private NotifyIcon CreateInitialNotifyIcon()
         {
-            return  new()
+            return new()
             {
                 Text = iconText,
                 Icon = icons[0],
