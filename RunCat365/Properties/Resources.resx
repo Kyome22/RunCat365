@@ -409,4 +409,91 @@
   <data name="light_road_sprout" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\resources\game\light\light_road_sprout.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="red_cat_0" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\runners\cat\red_cat_0.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="red_cat_1" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\runners\cat\red_cat_1.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="red_cat_2" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\runners\cat\red_cat_2.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="red_cat_3" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\runners\cat\red_cat_3.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="red_cat_4" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\runners\cat\red_cat_4.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="red_horse_0" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\runners\horse\red_horse_0.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="red_horse_1" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\runners\horse\red_horse_1.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="red_horse_2" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\runners\horse\red_horse_2.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="red_horse_3" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\runners\horse\red_horse_3.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="red_horse_4" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\runners\horse\red_horse_4.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="red_horse_5" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\runners\horse\red_horse_5.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="red_horse_6" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\runners\horse\red_horse_6.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="red_horse_7" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\runners\horse\red_horse_7.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="red_horse_8" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\runners\horse\red_horse_8.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="red_horse_9" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\runners\horse\red_horse_9.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="red_horse_10" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\runners\horse\red_horse_10.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="red_horse_11" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\runners\horse\red_horse_11.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="red_horse_12" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\runners\horse\red_horse_12.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="red_horse_13" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\runners\horse\red_horse_13.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="red_parrot_0" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\runners\parrot\red_parrot_0.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="red_parrot_1" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\runners\parrot\red_parrot_1.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="red_parrot_2" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\runners\parrot\red_parrot_2.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="red_parrot_3" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\runners\parrot\red_parrot_3.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="red_parrot_4" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\runners\parrot\red_parrot_4.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="red_parrot_5" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\runners\parrot\red_parrot_5.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="red_parrot_6" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\runners\parrot\red_parrot_6.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="red_parrot_7" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\runners\parrot\red_parrot_7.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="red_parrot_8" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\runners\parrot\red_parrot_8.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="red_parrot_9" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\runners\parrot\red_parrot_9.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
 </root>

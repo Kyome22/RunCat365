@@ -20,6 +20,8 @@ namespace RunCat365
     internal class ContextMenuManager : IDisposable
     {
         private readonly CustomToolStripMenuItem systemInfoMenu = new();
+        private readonly ToolStripMenuItem memoryMenuItem = new();
+        private readonly MemoryRepository memoryRepository = new MemoryRepository();
         private readonly NotifyIcon notifyIcon = new();
         private readonly List<Icon> icons = [];
         private readonly object iconLock = new();
@@ -185,8 +187,12 @@ namespace RunCat365
             var capacity = runner.GetFrameNumber();
             var list = new List<Icon>(capacity);
             for (int i = 0; i < capacity; i++)
+
             {
-                var iconName = $"{prefix}_{runnerName}_{i}".ToLower();
+                var memoryLoad = memoryRepository.Get().MemoryLoad;
+                var iconPrefix = (memoryLoad > 80) ? "red" : prefix;
+                var iconName = $"{iconPrefix}_{runnerName}_{i}".ToLower();
+
                 var icon = rm.GetObject(iconName);
                 if (icon is null) continue;
                 list.Add((Icon)icon);
@@ -258,6 +264,10 @@ namespace RunCat365
         internal void SetSystemInfoMenuText(string text)
         {
             systemInfoMenu.Text = text;
+        }
+        internal void SetSystemInfoMemoryMenuText(string text)
+        {
+            memoryMenuItem.Text = text;
         }
 
         internal void SetNotifyIconText(string text)
