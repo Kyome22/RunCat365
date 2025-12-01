@@ -69,12 +69,22 @@ namespace RunCat365
                 var parentPrefix = isLastItem ? "   └─ " : "   ├─ ";
                 var childIndent = isLastItem ? "      " : "   │  ";
                 var percentage = ((double)info.UsedSpaceSize / info.TotalSize) * 100.0;
-                resultLines.Add($"{parentPrefix}{info.Drive.GetString()}: {percentage:f1}%");
+                resultLines.Add($"{parentPrefix}{info.Drive.GetString()}: {percentage:f1}% {GenerateStorageBar(percentage)}");
                 resultLines.Add($"{childIndent}   ├─ Used: {info.UsedSpaceSize.ToByteFormatted()}");
                 resultLines.Add($"{childIndent}   └─ Available: {info.AvailableSpaceSize.ToByteFormatted()}");
             }
 
             return resultLines;
+        }
+
+        private static string GenerateStorageBar(double usagePercent)
+        {
+            const int barLength = 10;
+            int filledLength = (int)(barLength * usagePercent / 100.0f);
+            string filled = new string('▣', filledLength);
+            string empty = new string('□', barLength - filledLength);
+
+            return filled + empty;
         }
     }
 
