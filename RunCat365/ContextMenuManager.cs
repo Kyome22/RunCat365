@@ -14,6 +14,7 @@
 
 using RunCat365.Properties;
 using System.ComponentModel;
+using Windows.ApplicationModel;
 
 namespace RunCat365
 {
@@ -42,6 +43,34 @@ namespace RunCat365
         {
             systemInfoMenu.Text = "-\n-\n-\n-\n-";
             systemInfoMenu.Enabled = false;
+
+            var taskManagerMenu = new CustomToolStripMenuItem("Open Task Manager");
+            taskManagerMenu.Click += async (sender, e) =>
+            {
+                try
+                {
+                    var fullTrustProcess = FullTrustProcessLauncher.LaunchFullTrustProcessForCurrentAppAsync(
+                        "-fulltrust"
+                    );
+                    await fullTrustProcess;
+                }
+                catch
+                {
+                    try
+                    {
+                        System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
+                        {
+                            FileName = "taskmgr",
+                            UseShellExecute = true
+                        });
+                    }
+                    catch (Exception localEx)
+                    {
+                        MessageBox.Show($"Failed to open Task Manager:\n{localEx.Message}", 
+                            "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                }
+            };
 
             var runnersMenu = new CustomToolStripMenuItem("Runners");
             runnersMenu.SetupSubMenusFromEnum<Runner>(
@@ -131,6 +160,8 @@ namespace RunCat365
             var contextMenuStrip = new ContextMenuStrip(new Container());
             contextMenuStrip.Items.AddRange(
                 systemInfoMenu,
+                new ToolStripSeparator(),
+                taskManagerMenu,
                 new ToolStripSeparator(),
                 runnersMenu,
                 new ToolStripSeparator(),

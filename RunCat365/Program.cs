@@ -24,6 +24,25 @@ namespace RunCat365
         [STAThread]
         static void Main()
         {
+            var args = Environment.GetCommandLineArgs();
+            if (args.Contains("-fulltrust"))
+            {
+                try
+                {
+                    Process.Start(new ProcessStartInfo
+                    {
+                        FileName = "taskmgr",
+                        UseShellExecute = true
+                    });
+                }
+                catch (Exception e)
+                {
+                    MessageBox.Show($"Failed to open Task Manager:\n{e.Message}", 
+                        "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+                return;
+            }
+
             // Terminate RunCat365 if there's any existing instance.
             using var procMutex = new Mutex(true, "_RUNCAT_MUTEX", out var result);
             if (!result) return;
