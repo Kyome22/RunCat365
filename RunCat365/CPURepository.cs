@@ -13,6 +13,8 @@
 //    limitations under the License.
 
 using System.Diagnostics;
+using System.Globalization;
+using RunCat365.Properties;
 
 namespace RunCat365
 {
@@ -33,12 +35,18 @@ namespace RunCat365
 
         internal static List<string> GenerateIndicator(this CPUInfo cpuInfo)
         {
+            var cpuLabel = "CPU: ";
+            
+            var userLabel = Resources.ResourceManager.GetString("Info.User", CultureInfo.CurrentUICulture) ?? "User: ";
+            var kernelLabel = Resources.ResourceManager.GetString("Info.Kernel", CultureInfo.CurrentUICulture) ?? "Kernel: ";
+            var availableLabel = Resources.ResourceManager.GetString("Info.Available", CultureInfo.CurrentUICulture) ?? "Available: ";
+
             var resultLines = new List<string>
             {
-                $"CPU: {cpuInfo.Total:f1}%",
-                $"   ├─ User: {cpuInfo.User:f1}%",
-                $"   ├─ Kernel: {cpuInfo.Kernel:f1}%",
-                $"   └─ Available: {cpuInfo.Idle:f1}%"
+                $"{cpuLabel}{cpuInfo.Total:f1}%",
+                $"   ├─ {userLabel}{cpuInfo.User:f1}%",
+                $"   ├─ {kernelLabel}{cpuInfo.Kernel:f1}%",
+                $"   └─ {availableLabel}{cpuInfo.Idle:f1}%"
             };
             return resultLines;
         }

@@ -11,6 +11,8 @@
 //    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 //    See the License for the specific language governing permissions and
 //    limitations under the License.
+using System.Globalization;
+using RunCat365.Properties;
 
 namespace RunCat365
 {
@@ -55,9 +57,13 @@ namespace RunCat365
     {
         internal static List<string> GenerateIndicator(this List<StorageInfo> storageInfoList)
         {
+            var storageHeader = Resources.ResourceManager.GetString("Info.Storage", CultureInfo.CurrentUICulture) ?? "Storage:";
+            var usedLabel = Resources.ResourceManager.GetString("Info.Used", CultureInfo.CurrentUICulture) ?? "Used: ";
+            var availableLabel = Resources.ResourceManager.GetString("Info.Available", CultureInfo.CurrentUICulture) ?? "Available: ";
+
             var resultLines = new List<string>
             {
-                "Storage:"
+                storageHeader
             };
 
             if (storageInfoList.Count == 0) return resultLines;
@@ -70,8 +76,8 @@ namespace RunCat365
                 var childIndent = isLastItem ? "      " : "   │  ";
                 var percentage = ((double)info.UsedSpaceSize / info.TotalSize) * 100.0;
                 resultLines.Add($"{parentPrefix}{info.Drive.GetString()}: {percentage:f1}%");
-                resultLines.Add($"{childIndent}   ├─ Used: {info.UsedSpaceSize.ToByteFormatted()}");
-                resultLines.Add($"{childIndent}   └─ Available: {info.AvailableSpaceSize.ToByteFormatted()}");
+                resultLines.Add($"{childIndent}   ├─ {usedLabel}{info.UsedSpaceSize.ToByteFormatted()}");
+                resultLines.Add($"{childIndent}   └─ {availableLabel}{info.AvailableSpaceSize.ToByteFormatted()}");
             }
 
             return resultLines;
