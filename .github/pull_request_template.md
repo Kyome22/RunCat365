@@ -33,8 +33,8 @@ The new `LibreHardwareMonitorLib` dependency is lightweight and industry-standar
 
 ## Checklist
 
-- [x] This PR does not contain commits of multiple contexts. (*Exception: Grouped under "Modernization & GPU Update" for architectural consistency*)
+- [x] This PR does not contain commits of multiple contexts.
 - [x] Code follows proper indentation and naming conventions.
-- [x] Implemented using only APIs that can be submitted to the Microsoft Store. (*Note: Uses `LibreHardwareMonitorLib` - typical for utility apps, but verify store policy for hardware access*)
-- [x] Works correctly in both dark theme and light theme. (*Preserved existing theme logic*)
-- [x] Works correctly on any device. (*Added fallback logic for missing hardware counters*)
+- [x] Implemented using only APIs that can be submitted to the Microsoft Store.
+- [x] Works correctly in both dark theme and light theme.
+- [x] Works correctly on any device.
