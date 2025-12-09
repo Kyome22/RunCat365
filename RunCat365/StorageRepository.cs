@@ -12,9 +12,9 @@
 //    See the License for the specific language governing permissions and
 //    limitations under the License.
 
-namespace RunCat365
-{
-    enum Drive
+namespace RunCat365;
+
+internal enum Drive
     {
         C,
         D
@@ -82,7 +82,7 @@ namespace RunCat365
     {
         private readonly List<StorageInfo> storageInfoList = [];
 
-        internal StorageRepository() { }
+        public StorageRepository() { }
 
         internal void Update()
         {
@@ -117,4 +117,4 @@ namespace RunCat365
             return storageInfoList;
         }
     }
-}
+

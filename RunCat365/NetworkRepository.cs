@@ -14,9 +14,9 @@
 
 using System.Net.NetworkInformation;
 
-namespace RunCat365
-{
-    struct NetworkInfo
+namespace RunCat365;
+
+internal struct NetworkInfo
     {
         internal float SentSpeed { get; set; }
         internal float ReceivedSpeed { get; set; }
@@ -42,19 +42,21 @@ namespace RunCat365
 
     internal class NetworkRepository
     {
-        private readonly NetworkInterface networkInterface;
+        private readonly NetworkInterface? networkInterface;
         private long lastSent;
         private long lastReceived;
         private DateTime lastUpdate;
         private NetworkInfo networkInfo;
 
-        internal NetworkRepository()
+        public NetworkRepository()
         {
-            networkInterface = GetActiveNetworkInterface()
-                ?? throw new InvalidOperationException("No valid network interface found.");
-            var stats = networkInterface.GetIPStatistics();
-            lastSent = stats.BytesSent;
-            lastReceived = stats.BytesReceived;
+            networkInterface = GetActiveNetworkInterface();
+            if (networkInterface != null)
+            {
+                var stats = networkInterface.GetIPStatistics();
+                lastSent = stats.BytesSent;
+                lastReceived = stats.BytesReceived;
+            }
             lastUpdate = DateTime.UtcNow;
         }
 
@@ -81,6 +83,8 @@ namespace RunCat365
 
         internal void Update()
         {
+            if (networkInterface == null) return;
+
             var stats = networkInterface.GetIPStatistics();
             var now = DateTime.UtcNow;
             var elapsedSec = (now - lastUpdate).TotalSeconds;
@@ -100,4 +104,4 @@ namespace RunCat365
             return networkInfo;
         }
     }
-}
+

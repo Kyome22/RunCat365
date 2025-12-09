@@ -12,229 +12,263 @@
 //    See the License for the specific language governing permissions and
 //    limitations under the License.
 
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Win32;
 using RunCat365.Properties;
 using System.Diagnostics;
 using FormsTimer = System.Windows.Forms.Timer;
 
-namespace RunCat365
-{
-    internal static class Program
-    {
-        [STAThread]
-        static void Main()
-        {
-            // Terminate RunCat365 if there's any existing instance.
-            using var procMutex = new Mutex(true, "_RUNCAT_MUTEX", out var result);
-            if (!result) return;
+namespace RunCat365;
 
-            try
-            {
-                ApplicationConfiguration.Initialize();
-                Application.SetColorMode(SystemColorMode.System);
-                Application.Run(new RunCat365ApplicationContext());
-            }
-            finally
-            {
-                procMutex?.ReleaseMutex();
-            }
+internal static class Program
+{
+    [STAThread]
+    static void Main()
+    {
+        // Terminate RunCat365 if there's any existing instance.
+        using var procMutex = new Mutex(true, "_RUNCAT_MUTEX", out var result);
+        if (!result) return;
+
+        try
+        {
+            ApplicationConfiguration.Initialize();
+            Application.SetColorMode(SystemColorMode.System);
+
+            var services = new ServiceCollection();
+            ConfigureServices(services);
+            using var serviceProvider = services.BuildServiceProvider();
+
+            var context = serviceProvider.GetRequiredService<RunCat365ApplicationContext>();
+            Application.Run(context);
+        }
+        finally
+        {
+            procMutex?.ReleaseMutex();
         }
     }
 
-    internal class RunCat365ApplicationContext : ApplicationContext
+    private static void ConfigureServices(IServiceCollection services)
     {
-        private const int FETCH_TIMER_DEFAULT_INTERVAL = 1000;
-        private const int FETCH_COUNTER_SIZE = 5;
-        private const int ANIMATE_TIMER_DEFAULT_INTERVAL = 200;
-        private readonly CPURepository cpuRepository;
-        private readonly MemoryRepository memoryRepository;
-        private readonly StorageRepository storageRepository;
-        private readonly NetworkRepository networkRepository;
-        private readonly LaunchAtStartupManager launchAtStartupManager;
-        private readonly ContextMenuManager contextMenuManager;
-        private readonly FormsTimer fetchTimer;
-        private readonly FormsTimer animateTimer;
-        private Runner runner = Runner.Cat;
-        private Theme manualTheme = Theme.System;
-        private FPSMaxLimit fpsMaxLimit = FPSMaxLimit.FPS40;
-        private int fetchCounter = 5;
+        services.AddSingleton<CPURepository>();
+        services.AddSingleton<MemoryRepository>();
+        services.AddSingleton<StorageRepository>();
+        services.AddSingleton<NetworkRepository>();
+        services.AddSingleton<GPURepository>();
+        services.AddSingleton<LaunchAtStartupManager>();
+        services.AddSingleton<RunCat365ApplicationContext>();
+    }
+}
 
-        public RunCat365ApplicationContext()
+internal class RunCat365ApplicationContext : ApplicationContext
+{
+    private const int FETCH_TIMER_DEFAULT_INTERVAL = 1000;
+    private const int FETCH_COUNTER_SIZE = 5;
+    private const int ANIMATE_TIMER_DEFAULT_INTERVAL = 200;
+    
+    private readonly CPURepository cpuRepository;
+    private readonly MemoryRepository memoryRepository;
+    private readonly StorageRepository storageRepository;
+    private readonly NetworkRepository networkRepository;
+    private readonly GPURepository gpuRepository;
+    private readonly LaunchAtStartupManager launchAtStartupManager;
+    private readonly ContextMenuManager contextMenuManager;
+    private readonly FormsTimer fetchTimer;
+    private readonly FormsTimer animateTimer;
+    private Runner runner = Runner.Cat;
+    private Theme manualTheme = Theme.System;
+    private FPSMaxLimit fpsMaxLimit = FPSMaxLimit.FPS40;
+    private int fetchCounter = 5;
+
+    public RunCat365ApplicationContext(
+        CPURepository cpuRepository,
+        MemoryRepository memoryRepository,
+        StorageRepository storageRepository,
+        NetworkRepository networkRepository,
+        GPURepository gpuRepository,
+        LaunchAtStartupManager launchAtStartupManager)
+    {
+        this.cpuRepository = cpuRepository;
+        this.memoryRepository = memoryRepository;
+        this.storageRepository = storageRepository;
+        this.networkRepository = networkRepository;
+        this.gpuRepository = gpuRepository;
+        this.launchAtStartupManager = launchAtStartupManager;
+
+        UserSettings.Default.Reload();
+        _ = Enum.TryParse(UserSettings.Default.Runner, out runner);
+        _ = Enum.TryParse(UserSettings.Default.Theme, out manualTheme);
+        _ = Enum.TryParse(UserSettings.Default.FPSMaxLimit, out fpsMaxLimit);
+
+        SystemEvents.UserPreferenceChanged += new UserPreferenceChangedEventHandler(UserPreferenceChanged);
+
+        contextMenuManager = new ContextMenuManager(
+            () => runner,
+            r => ChangeRunner(r),
+            () => GetSystemTheme(),
+            () => manualTheme,
+            t => ChangeManualTheme(t),
+            () => fpsMaxLimit,
+            f => ChangeFPSMaxLimit(f),
+            () => this.launchAtStartupManager.GetStartup(),
+            s => this.launchAtStartupManager.SetStartup(s),
+            () => OpenRepository(),
+            () => Application.Exit()
+        );
+
+        animateTimer = new FormsTimer
         {
-            UserSettings.Default.Reload();
-            _ = Enum.TryParse(UserSettings.Default.Runner, out runner);
-            _ = Enum.TryParse(UserSettings.Default.Theme, out manualTheme);
-            _ = Enum.TryParse(UserSettings.Default.FPSMaxLimit, out fpsMaxLimit);
+            Interval = ANIMATE_TIMER_DEFAULT_INTERVAL
+        };
+        animateTimer.Tick += new EventHandler(AnimationTick);
+        animateTimer.Start();
 
-            SystemEvents.UserPreferenceChanged += new UserPreferenceChangedEventHandler(UserPreferenceChanged);
-
-            cpuRepository = new CPURepository();
-            memoryRepository = new MemoryRepository();
-            storageRepository = new StorageRepository();
-            launchAtStartupManager = new LaunchAtStartupManager();
-            networkRepository = new NetworkRepository();
-
-            contextMenuManager = new ContextMenuManager(
-                () => runner,
-                r => ChangeRunner(r),
-                () => GetSystemTheme(),
-                () => manualTheme,
-                t => ChangeManualTheme(t),
-                () => fpsMaxLimit,
-                f => ChangeFPSMaxLimit(f),
-                () => launchAtStartupManager.GetStartup(),
-                s => launchAtStartupManager.SetStartup(s),
-                () => OpenRepository(),
-                () => Application.Exit()
-            );
-
-            animateTimer = new FormsTimer
-            {
-                Interval = ANIMATE_TIMER_DEFAULT_INTERVAL
-            };
-            animateTimer.Tick += new EventHandler(AnimationTick);
-            animateTimer.Start();
-
-            fetchTimer = new FormsTimer
-            {
-                Interval = FETCH_TIMER_DEFAULT_INTERVAL
-            };
-            fetchTimer.Tick += new EventHandler(FetchTick);
-            fetchTimer.Start();
-
-            ShowBalloonTip();
-        }
-
-        private static Theme GetSystemTheme()
+        fetchTimer = new FormsTimer
         {
-            var keyName = @"Software\Microsoft\Windows\CurrentVersion\Themes\Personalize";
-            using var rKey = Registry.CurrentUser.OpenSubKey(keyName);
-            if (rKey is null) return Theme.Light;
-            var value = rKey.GetValue("SystemUsesLightTheme");
-            if (value is null) return Theme.Light;
-            return (int)value == 0 ? Theme.Dark : Theme.Light;
-        }
+            Interval = FETCH_TIMER_DEFAULT_INTERVAL
+        };
+        fetchTimer.Tick += new EventHandler(FetchTick);
+        fetchTimer.Start();
 
-        private void ShowBalloonTip()
-        {
-            if (UserSettings.Default.FirstLaunch)
-            {
-                contextMenuManager.ShowBalloonTip();
-                UserSettings.Default.FirstLaunch = false;
-                UserSettings.Default.Save();
-            }
-        }
+        ShowBalloonTip();
+    }
 
-        private void UserPreferenceChanged(object sender, UserPreferenceChangedEventArgs e)
-        {
-            if (e.Category == UserPreferenceCategory.General)
-            {
-                var systemTheme = GetSystemTheme();
-                contextMenuManager.SetIcons(systemTheme, manualTheme, runner);
-            }
-        }
+    private static Theme GetSystemTheme()
+    {
+        var keyName = @"Software\Microsoft\Windows\CurrentVersion\Themes\Personalize";
+        using var rKey = Registry.CurrentUser.OpenSubKey(keyName);
+        if (rKey is null) return Theme.Light;
+        var value = rKey.GetValue("SystemUsesLightTheme");
+        if (value is null) return Theme.Light;
+        return (int)value == 0 ? Theme.Dark : Theme.Light;
+    }
 
-        private static void OpenRepository()
+    private void ShowBalloonTip()
+    {
+        if (UserSettings.Default.FirstLaunch)
         {
-            try
-            {
-                Process.Start(new ProcessStartInfo()
-                {
-                    FileName = "https://github.com/Kyome22/RunCat365.git",
-                    UseShellExecute = true
-                });
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine($"Error: {e.Message}");
-            }
-        }
-
-        private void ChangeRunner(Runner r)
-        {
-            runner = r;
-            UserSettings.Default.Runner = runner.ToString();
+            contextMenuManager.ShowBalloonTip();
+            UserSettings.Default.FirstLaunch = false;
             UserSettings.Default.Save();
         }
+    }
 
-        private void ChangeManualTheme(Theme t)
+    private void UserPreferenceChanged(object sender, UserPreferenceChangedEventArgs e)
+    {
+        if (e.Category == UserPreferenceCategory.General)
         {
-            manualTheme = t;
-            UserSettings.Default.Theme = manualTheme.ToString();
-            UserSettings.Default.Save();
+            var systemTheme = GetSystemTheme();
+            contextMenuManager.SetIcons(systemTheme, manualTheme, runner);
         }
+    }
 
-        private void ChangeFPSMaxLimit(FPSMaxLimit f)
+    private static void OpenRepository()
+    {
+        try
         {
-            fpsMaxLimit = f;
-            UserSettings.Default.FPSMaxLimit = fpsMaxLimit.ToString();
-            UserSettings.Default.Save();
-        }
-
-        private void AnimationTick(object? sender, EventArgs e)
-        {
-            contextMenuManager.AdvanceFrame();
-        }
-
-        private void FetchSystemInfo(
-            CPUInfo cpuInfo,
-            MemoryInfo memoryInfo,
-            List<StorageInfo> storageValue,
-            NetworkInfo networkInfo
-        )
-        {
-            contextMenuManager.SetNotifyIconText(cpuInfo.GetDescription());
-
-            var systemInfoValues = new List<string>();
-            systemInfoValues.AddRange(cpuInfo.GenerateIndicator());
-            systemInfoValues.AddRange(memoryInfo.GenerateIndicator());
-            systemInfoValues.AddRange(storageValue.GenerateIndicator());
-            systemInfoValues.AddRange(networkInfo.GenerateIndicator());
-            contextMenuManager.SetSystemInfoMenuText(string.Join("\n", [.. systemInfoValues]));
-        }
-
-        private int CalculateInterval(float cpuTotalValue)
-        {
-            // Range of interval: 25-500 (ms) = 2-40 (fps)
-            var speed = (float)Math.Max(1.0f, (cpuTotalValue / 5.0f) * fpsMaxLimit.GetRate());
-            return (int)(500.0f / speed);
-        }
-
-        private void FetchTick(object? state, EventArgs e)
-        {
-            cpuRepository.Update();
-            fetchCounter += 1;
-            if (fetchCounter < FETCH_COUNTER_SIZE) return;
-            fetchCounter = 0;
-
-            var cpuInfo = cpuRepository.Get();
-            var memoryInfo = memoryRepository.Get();
-            var storageInfo = storageRepository.Get();
-            var networkInfo = networkRepository.Get();
-            FetchSystemInfo(cpuInfo, memoryInfo, storageInfo, networkInfo);
-
-            animateTimer.Stop();
-            animateTimer.Interval = CalculateInterval(cpuInfo.Total);
-            animateTimer.Start();
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
+            Process.Start(new ProcessStartInfo()
             {
-                SystemEvents.UserPreferenceChanged -= UserPreferenceChanged;
-
-                animateTimer?.Stop();
-                animateTimer?.Dispose();
-                fetchTimer?.Stop();
-                fetchTimer?.Dispose();
-
-                cpuRepository?.Close();
-
-                contextMenuManager?.HideNotifyIcon();
-                contextMenuManager?.Dispose();
-            }
-            base.Dispose(disposing);
+                FileName = "https://github.com/Kyome22/RunCat365.git",
+                UseShellExecute = true
+            });
         }
+        catch (Exception e)
+        {
+            Console.WriteLine($"Error: {e.Message}");
+        }
+    }
+
+    private void ChangeRunner(Runner r)
+    {
+        runner = r;
+        UserSettings.Default.Runner = runner.ToString();
+        UserSettings.Default.Save();
+    }
+
+    private void ChangeManualTheme(Theme t)
+    {
+        manualTheme = t;
+        UserSettings.Default.Theme = manualTheme.ToString();
+        UserSettings.Default.Save();
+    }
+
+    private void ChangeFPSMaxLimit(FPSMaxLimit f)
+    {
+        fpsMaxLimit = f;
+        UserSettings.Default.FPSMaxLimit = fpsMaxLimit.ToString();
+        UserSettings.Default.Save();
+    }
+
+    private void AnimationTick(object? sender, EventArgs e)
+    {
+        // Get latest GPU usage for color
+        var gpuUsage = gpuRepository.Get().Utilization;
+        contextMenuManager.AdvanceFrame(gpuUsage);
+    }
+
+    private void FetchSystemInfo(
+        CPUInfo cpuInfo,
+        MemoryInfo memoryInfo,
+        List<StorageInfo> storageValue,
+        NetworkInfo networkInfo,
+        GPUInfo gpuInfo
+    )
+    {
+        contextMenuManager.SetNotifyIconText(cpuInfo.GetDescription());
+
+        var systemInfoValues = new List<string>();
+        systemInfoValues.AddRange(cpuInfo.GenerateIndicator());
+        systemInfoValues.AddRange(memoryInfo.GenerateIndicator());
+        systemInfoValues.AddRange(storageValue.GenerateIndicator());
+        systemInfoValues.AddRange(networkInfo.GenerateIndicator());
+        systemInfoValues.AddRange(gpuInfo.GenerateIndicator());
+        contextMenuManager.SetSystemInfoMenuText(string.Join("\n", [.. systemInfoValues]));
+    }
+
+    private int CalculateInterval(float cpuTotalValue)
+    {
+        // CPU drives Speed
+        // Range of interval: 25-500 (ms) = 2-40 (fps)
+        var speed = (float)Math.Max(1.0f, (cpuTotalValue / 5.0f) * fpsMaxLimit.GetRate());
+        return (int)(500.0f / speed);
+    }
+
+    private void FetchTick(object? state, EventArgs e)
+    {
+        cpuRepository.Update();
+        gpuRepository.Update();
+        fetchCounter += 1;
+        if (fetchCounter < FETCH_COUNTER_SIZE) return;
+        fetchCounter = 0;
+
+        var cpuInfo = cpuRepository.Get();
+        var memoryInfo = memoryRepository.Get();
+        var storageInfo = storageRepository.Get();
+        var networkInfo = networkRepository.Get();
+        var gpuInfo = gpuRepository.Get();
+        FetchSystemInfo(cpuInfo, memoryInfo, storageInfo, networkInfo, gpuInfo);
+
+        animateTimer.Stop();
+        animateTimer.Interval = CalculateInterval(cpuInfo.Total);
+        animateTimer.Start();
+    }
+
+    protected override void Dispose(bool disposing)
+    {
+        if (disposing)
+        {
+            SystemEvents.UserPreferenceChanged -= UserPreferenceChanged;
+
+            animateTimer?.Stop();
+            animateTimer?.Dispose();
+            fetchTimer?.Stop();
+            fetchTimer?.Dispose();
+
+            cpuRepository?.Close();
+            gpuRepository?.Close();
+
+            contextMenuManager?.HideNotifyIcon();
+            contextMenuManager?.Dispose();
+        }
+        base.Dispose(disposing);
     }
 }

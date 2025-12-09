@@ -14,9 +14,9 @@
 
 using System.Diagnostics;
 
-namespace RunCat365
-{
-    struct CPUInfo
+namespace RunCat365;
+
+internal struct CPUInfo
     {
         internal float Total { get; set; }
         internal float User { get; set; }
@@ -46,34 +46,50 @@ namespace RunCat365
 
     internal class CPURepository
     {
-        private readonly PerformanceCounter totalCounter;
-        private readonly PerformanceCounter userCounter;
-        private readonly PerformanceCounter kernelCounter;
-        private readonly PerformanceCounter idleCounter;
+        private readonly PerformanceCounter? totalCounter;
+        private readonly PerformanceCounter? userCounter;
+        private readonly PerformanceCounter? kernelCounter;
+        private readonly PerformanceCounter? idleCounter;
         private readonly List<CPUInfo> cpuInfoList = [];
         private const int CPU_INFO_LIST_LIMIT_SIZE = 5;
 
-        internal CPURepository()
+        public CPURepository()
         {
-            totalCounter = new PerformanceCounter("Processor", "% Processor Time", "_Total");
-            userCounter = new PerformanceCounter("Processor", "% User Time", "_Total");
-            kernelCounter = new PerformanceCounter("Processor", "% Privileged Time", "_Total");
-            idleCounter = new PerformanceCounter("Processor", "% Idle Time", "_Total");
+            try
+            {
+                totalCounter = new PerformanceCounter("Processor", "% Processor Time", "_Total");
+                userCounter = new PerformanceCounter("Processor", "% User Time", "_Total");
+                kernelCounter = new PerformanceCounter("Processor", "% Privileged Time", "_Total");
+                idleCounter = new PerformanceCounter("Processor", "% Idle Time", "_Total");
 
-            // Discards first return value
-            _ = totalCounter.NextValue();
-            _ = userCounter.NextValue();
-            _ = kernelCounter.NextValue();
-            _ = idleCounter.NextValue();
+                // Discards first return value
+                _ = totalCounter.NextValue();
+                _ = userCounter.NextValue();
+                _ = kernelCounter.NextValue();
+                _ = idleCounter.NextValue();
+            }
+            catch
+            {
+                // Counters not available
+            }
         }
 
         internal void Update()
         {
             // Range of value: 0-100 (%)
-            var total = Math.Min(100, totalCounter.NextValue());
-            var user = Math.Min(100, userCounter.NextValue());
-            var kernel = Math.Min(100, kernelCounter.NextValue());
-            var idle = Math.Min(100, idleCounter.NextValue());
+            float total = 0, user = 0, kernel = 0, idle = 0;
+
+            if (totalCounter != null)
+            {
+                try
+                {
+                    total = Math.Min(100, totalCounter.NextValue());
+                    user = Math.Min(100, userCounter!.NextValue());
+                    kernel = Math.Min(100, kernelCounter!.NextValue());
+                    idle = Math.Min(100, idleCounter!.NextValue());
+                }
+                catch { }
+            }
 
             var cpuInfo = new CPUInfo
             {
@@ -105,10 +121,10 @@ namespace RunCat365
 
         internal void Close()
         {
-            totalCounter.Close();
-            userCounter.Close();
-            kernelCounter.Close();
-            idleCounter.Close();
+            totalCounter?.Close();
+            userCounter?.Close();
+            kernelCounter?.Close();
+            idleCounter?.Close();
         }
     }
-}
+

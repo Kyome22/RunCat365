@@ -14,9 +14,9 @@
 
 using System.Runtime.InteropServices;
 
-namespace RunCat365
-{
-    struct MemoryInfo
+namespace RunCat365;
+
+internal struct MemoryInfo
     {
         internal uint MemoryLoad { get; set; }
         internal long TotalMemory { get; set; }
@@ -43,7 +43,7 @@ namespace RunCat365
     {
         private MemoryInfo memoryInfo;
 
-        internal MemoryRepository()
+        public MemoryRepository()
         {
             memoryInfo = new MemoryInfo();
         }
@@ -86,4 +86,4 @@ namespace RunCat365
         [return: MarshalAs(UnmanagedType.Bool)]
         internal static partial bool GlobalMemoryStatusEx(ref MemoryStatusEx lpBuffer);
     }
-}
+

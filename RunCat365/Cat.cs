@@ -12,108 +12,97 @@
 //    See the License for the specific language governing permissions and
 //    limitations under the License.
 
-namespace RunCat365
+namespace RunCat365;
+
+internal abstract class Cat
 {
-    internal abstract class Cat
+    internal abstract List<int> ViolationIndices();
+    internal abstract Cat Next();
+    internal abstract string GetString();
+
+    internal class Running(Running.Frame frame) : Cat
     {
-        internal abstract List<int> ViolationIndices();
-        internal abstract Cat Next();
-        internal abstract string GetString();
+        internal Frame CurrentFrame { get; } = frame;
 
-        internal class Running : Cat
+        internal override List<int> ViolationIndices()
         {
-            internal Frame CurrentFrame { get; }
-
-            internal Running(Frame frame)
+            return CurrentFrame switch
             {
-                CurrentFrame = frame;
-            }
-
-            internal override List<int> ViolationIndices()
-            {
-                return CurrentFrame switch
-                {
-                    Frame.Frame0 => [5, 6, 7],
-                    Frame.Frame1 => [5, 6],
-                    Frame.Frame2 => [5, 6],
-                    Frame.Frame3 => [5],
-                    Frame.Frame4 => [5, 7],
-                    _ => [],
-                };
-            }
-
-            internal override Cat Next()
-            {
-                var nextFrame = (Frame)(((int)CurrentFrame + 1) % Enum.GetValues<Frame>().Length);
-                return new Running(nextFrame);
-            }
-
-            internal override string GetString()
-            {
-                return $"running_{(int)CurrentFrame}";
-            }
-
-            internal enum Frame
-            {
-                Frame0,
-                Frame1,
-                Frame2,
-                Frame3,
-                Frame4
-            }
+                Frame.Frame0 => [5, 6, 7],
+                Frame.Frame1 => [5, 6],
+                Frame.Frame2 => [5, 6],
+                Frame.Frame3 => [5],
+                Frame.Frame4 => [5, 7],
+                _ => [],
+            };
         }
 
-        internal class Jumping : Cat
+        internal override Cat Next()
         {
-            internal Frame CurrentFrame { get; }
+            var nextFrame = (Frame)(((int)CurrentFrame + 1) % Enum.GetValues<Frame>().Length);
+            return new Running(nextFrame);
+        }
 
-            internal Jumping(Frame frame)
-            {
-                CurrentFrame = frame;
-            }
+        internal override string GetString()
+        {
+            return $"running_{(int)CurrentFrame}";
+        }
 
-            internal override List<int> ViolationIndices()
-            {
-                return CurrentFrame switch
-                {
-                    Frame.Frame0 => [5, 6, 7],
-                    Frame.Frame1 => [5, 6],
-                    Frame.Frame2 => [5, 6],
-                    Frame.Frame3 => [5, 6],
-                    Frame.Frame4 => [5, 6],
-                    Frame.Frame5 => [5],
-                    Frame.Frame6 => [],
-                    Frame.Frame7 => [],
-                    Frame.Frame8 => [],
-                    Frame.Frame9 => [7],
-                    _ => [],
-                };
-            }
+        internal enum Frame
+        {
+            Frame0,
+            Frame1,
+            Frame2,
+            Frame3,
+            Frame4
+        }
+    }
 
-            internal override Cat Next()
-            {
-                var nextFrame = (Frame)(((int)CurrentFrame + 1) % Enum.GetValues<Frame>().Length);
-                return new Jumping(nextFrame);
-            }
+    internal class Jumping(Jumping.Frame frame) : Cat
+    {
+        internal Frame CurrentFrame { get; } = frame;
 
-            internal override string GetString()
+        internal override List<int> ViolationIndices()
+        {
+            return CurrentFrame switch
             {
-                return $"jumping_{(int)CurrentFrame}";
-            }
+                Frame.Frame0 => [5, 6, 7],
+                Frame.Frame1 => [5, 6],
+                Frame.Frame2 => [5, 6],
+                Frame.Frame3 => [5, 6],
+                Frame.Frame4 => [5, 6],
+                Frame.Frame5 => [5],
+                Frame.Frame6 => [],
+                Frame.Frame7 => [],
+                Frame.Frame8 => [],
+                Frame.Frame9 => [7],
+                _ => [],
+            };
+        }
 
-            internal enum Frame
-            {
-                Frame0,
-                Frame1,
-                Frame2,
-                Frame3,
-                Frame4,
-                Frame5,
-                Frame6,
-                Frame7,
-                Frame8,
-                Frame9
-            }
+        internal override Cat Next()
+        {
+            var nextFrame = (Frame)(((int)CurrentFrame + 1) % Enum.GetValues<Frame>().Length);
+            return new Jumping(nextFrame);
+        }
+
+        internal override string GetString()
+        {
+            return $"jumping_{(int)CurrentFrame}";
+        }
+
+        internal enum Frame
+        {
+            Frame0,
+            Frame1,
+            Frame2,
+            Frame3,
+            Frame4,
+            Frame5,
+            Frame6,
+            Frame7,
+            Frame8,
+            Frame9
         }
     }
 }

@@ -244,16 +244,86 @@ namespace RunCat365
             notifyIcon.ShowBalloonTip(5000, "RunCat 365", message, ToolTipIcon.Info);
         }
 
-        internal void AdvanceFrame()
+        internal void AdvanceFrame(float gpuLoad = 0)
         {
             lock (iconLock)
             {
                 if (icons.Count == 0) return;
                 if (icons.Count <= current) current = 0;
-                notifyIcon.Icon = icons[current];
+                
+                var baseIcon = icons[current];
+                
+                if (gpuLoad > 0)
+                {
+                    // Tint based on GPU Load (Heat: 0% Normal -> 100% Red)
+                    try 
+                    {
+                        var tintedIcon = ApplyHeatTint(baseIcon, gpuLoad);
+                        notifyIcon.Icon = tintedIcon;
+                        
+                        // Clean up the PREVIOUS manually created icon to avoid GDI leaks.
+                        // Note: We do NOT dispose baseIcon as it is in the 'icons' cache list.
+                        if (currentDisplayedIcon != null && currentDisplayedIcon != baseIcon)
+                        {
+                            currentDisplayedIcon.Dispose();
+                        }
+                        currentDisplayedIcon = tintedIcon;
+                    }
+                    catch 
+                    {
+                        // Fallback if GDI fails
+                        notifyIcon.Icon = baseIcon;
+                    }
+                }
+                else
+                {
+                    notifyIcon.Icon = baseIcon;
+                    if (currentDisplayedIcon != null && currentDisplayedIcon != baseIcon)
+                    {
+                        currentDisplayedIcon.Dispose();
+                        currentDisplayedIcon = null;
+                    }
+                }
+
                 current = (current + 1) % icons.Count;
             }
         }
+
+        private Icon ApplyHeatTint(Icon source, float load)
+        {
+            // Calculate tint intensity (0.0 to 1.0)
+            float intensity = Math.Clamp(load / 100f, 0f, 1f);
+            
+            // Start showing color only after 10% load to keep clean look at idle
+            if (intensity < 0.1f) return (Icon)source.Clone();
+
+            using var bitmap = source.ToBitmap();
+            
+            // Heat Color (Red/Orange)
+            var heatColor = Color.FromArgb(255, 255, 69, 0); // OrangeRed
+
+            for (int y = 0; y < bitmap.Height; y++)
+            {
+                for (int x = 0; x < bitmap.Width; x++)
+                {
+                    var pixel = bitmap.GetPixel(x, y);
+                    if (pixel.A > 0)
+                    {
+                        // Simple tint: Interpolate between original pixel and heat color
+                        var r = (int)(pixel.R + (heatColor.R - pixel.R) * intensity);
+                        var g = (int)(pixel.G + (heatColor.G - pixel.G) * intensity);
+                        var b = (int)(pixel.B + (heatColor.B - pixel.B) * intensity);
+                        
+                        bitmap.SetPixel(x, y, Color.FromArgb(pixel.A, r, g, b));
+                    }
+                }
+            }
+            
+            return Icon.FromHandle(bitmap.GetHicon());
+        }
+
+        private Icon? currentDisplayedIcon;
+
 
         internal void SetSystemInfoMenuText(string text)
         {
