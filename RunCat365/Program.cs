@@ -47,6 +47,7 @@ namespace RunCat365
         private const int FETCH_COUNTER_SIZE = 5;
         private const int ANIMATE_TIMER_DEFAULT_INTERVAL = 200;
         private readonly CPURepository cpuRepository;
+        private readonly GPURepository gpuRepository;
         private readonly MemoryRepository memoryRepository;
         private readonly StorageRepository storageRepository;
         private readonly NetworkRepository networkRepository;
@@ -69,6 +70,7 @@ namespace RunCat365
             SystemEvents.UserPreferenceChanged += new UserPreferenceChangedEventHandler(UserPreferenceChanged);
 
             cpuRepository = new CPURepository();
+            gpuRepository = new GPURepository();
             memoryRepository = new MemoryRepository();
             storageRepository = new StorageRepository();
             launchAtStartupManager = new LaunchAtStartupManager();
@@ -173,36 +175,43 @@ namespace RunCat365
 
         private void AnimationTick(object? sender, EventArgs e)
         {
-            contextMenuManager.AdvanceFrame();
+            float gpuUsage = gpuRepository.Get().Utilization;
+            contextMenuManager.AdvanceFrame(gpuUsage);
         }
 
         private void FetchSystemInfo(
             CPUInfo cpuInfo,
             MemoryInfo memoryInfo,
             List<StorageInfo> storageValue,
-            NetworkInfo networkInfo
+            NetworkInfo networkInfo,
+            GPUInfo gpuInfo
         )
         {
-            contextMenuManager.SetNotifyIconText(cpuInfo.GetDescription());
+            contextMenuManager.SetNotifyIconText($"{cpuInfo.GetDescription()}\n{gpuInfo.GetDescription()}");
 
             var systemInfoValues = new List<string>();
             systemInfoValues.AddRange(cpuInfo.GenerateIndicator());
             systemInfoValues.AddRange(memoryInfo.GenerateIndicator());
             systemInfoValues.AddRange(storageValue.GenerateIndicator());
             systemInfoValues.AddRange(networkInfo.GenerateIndicator());
+            systemInfoValues.AddRange(gpuInfo.GenerateIndicator());
             contextMenuManager.SetSystemInfoMenuText(string.Join("\n", [.. systemInfoValues]));
         }
 
-        private int CalculateInterval(float cpuTotalValue)
+        private int CalculateInterval(float cpuTotalValue, float gpuTotalValue)
         {
+            // Use the higher load between CPU and GPU to drive the cat speed
+            var maxLoad = Math.Max(cpuTotalValue, gpuTotalValue);
+            
             // Range of interval: 25-500 (ms) = 2-40 (fps)
-            var speed = (float)Math.Max(1.0f, (cpuTotalValue / 5.0f) * fpsMaxLimit.GetRate());
+            var speed = (float)Math.Max(1.0f, (maxLoad / 5.0f) * fpsMaxLimit.GetRate());
             return (int)(500.0f / speed);
         }
 
         private void FetchTick(object? state, EventArgs e)
         {
             cpuRepository.Update();
+            gpuRepository.Update();
             fetchCounter += 1;
             if (fetchCounter < FETCH_COUNTER_SIZE) return;
             fetchCounter = 0;
@@ -211,10 +220,11 @@ namespace RunCat365
             var memoryInfo = memoryRepository.Get();
             var storageInfo = storageRepository.Get();
             var networkInfo = networkRepository.Get();
-            FetchSystemInfo(cpuInfo, memoryInfo, storageInfo, networkInfo);
+            var gpuInfo = gpuRepository.Get();
+            FetchSystemInfo(cpuInfo, memoryInfo, storageInfo, networkInfo, gpuInfo);
 
             animateTimer.Stop();
-            animateTimer.Interval = CalculateInterval(cpuInfo.Total);
+            animateTimer.Interval = CalculateInterval(cpuInfo.Total, gpuInfo.Utilization);
             animateTimer.Start();
         }
 
@@ -230,6 +240,7 @@ namespace RunCat365
                 fetchTimer?.Dispose();
 
                 cpuRepository?.Close();
+                gpuRepository?.Close();
 
                 contextMenuManager?.HideNotifyIcon();
                 contextMenuManager?.Dispose();
