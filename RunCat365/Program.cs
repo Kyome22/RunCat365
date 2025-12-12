@@ -175,8 +175,7 @@ namespace RunCat365
 
         private void AnimationTick(object? sender, EventArgs e)
         {
-            float gpuUsage = gpuRepository.Get().Utilization;
-            contextMenuManager.AdvanceFrame(gpuUsage);
+            contextMenuManager.AdvanceFrame();
         }
 
         private void FetchSystemInfo(

@@ -244,72 +244,15 @@ namespace RunCat365
             notifyIcon.ShowBalloonTip(5000, "RunCat 365", message, ToolTipIcon.Info);
         }
 
-        internal void AdvanceFrame(float gpuLoad = 0)
+        internal void AdvanceFrame()
         {
             lock (iconLock)
             {
                 if (icons.Count == 0) return;
                 if (icons.Count <= current) current = 0;
-
-                var baseIcon = icons[current];
-                if (gpuLoad > 0)
-                {
-                   try
-                   {
-                        var tintedIcon = ApplyHeatTint(baseIcon, gpuLoad);
-                        notifyIcon.Icon = tintedIcon;
-                        
-                        // Dispose previous tinted icon if it exists and isn't a base icon
-                        if (currentDisplayedIcon != null && !icons.Contains(currentDisplayedIcon))
-                        {
-                            currentDisplayedIcon.Dispose();
-                        }
-                        currentDisplayedIcon = tintedIcon;
-                   }
-                   catch
-                   {
-                       notifyIcon.Icon = baseIcon;
-                   }
-                }
-                else
-                {
-                    notifyIcon.Icon = baseIcon;
-                    if (currentDisplayedIcon != null && !icons.Contains(currentDisplayedIcon))
-                    {
-                         currentDisplayedIcon.Dispose();
-                         currentDisplayedIcon = null;
-                    }
-                }
-                
+                notifyIcon.Icon = icons[current];
                 current = (current + 1) % icons.Count;
             }
-        }
-
-        private Icon? currentDisplayedIcon;
-
-        private Icon ApplyHeatTint(Icon source, float load)
-        {
-            float intensity = Math.Clamp(load / 100f, 0f, 1f);
-            if (intensity < 0.1f) return (Icon)source.Clone();
-
-            using var bitmap = source.ToBitmap();
-            var heatColor = Color.FromArgb(255, 255, 69, 0); // OrangeRed
-
-            for (int y = 0; y < bitmap.Height; y++)
-            {
-                for (int x = 0; x < bitmap.Width; x++)
-                {
-                    var pixel = bitmap.GetPixel(x, y);
-                    if (pixel.A > 0)
-                    {
-                        var r = (int)(pixel.R + (heatColor.R - pixel.R) * intensity);
-                        var g = (int)(pixel.G + (heatColor.G - pixel.G) * intensity);
-                        var b = (int)(pixel.B + (heatColor.B - pixel.B) * intensity);
-                        bitmap.SetPixel(x, y, Color.FromArgb(pixel.A, r, g, b));
-                    }
-                }
-            }
-            return Icon.FromHandle(bitmap.GetHicon());
         }
 
         internal void SetSystemInfoMenuText(string text)
