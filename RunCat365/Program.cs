@@ -58,6 +58,8 @@ namespace RunCat365
         private Runner runner = Runner.Cat;
         private Theme manualTheme = Theme.System;
         private FPSMaxLimit fpsMaxLimit = FPSMaxLimit.FPS40;
+        private bool useGpuForSpeed = false;
+        private bool useMemoryForSpeed = false;
         private int fetchCounter = 5;
 
         public RunCat365ApplicationContext()
@@ -66,6 +68,8 @@ namespace RunCat365
             _ = Enum.TryParse(UserSettings.Default.Runner, out runner);
             _ = Enum.TryParse(UserSettings.Default.Theme, out manualTheme);
             _ = Enum.TryParse(UserSettings.Default.FPSMaxLimit, out fpsMaxLimit);
+            useGpuForSpeed = UserSettings.Default.UseGpuForSpeed;
+            useMemoryForSpeed = UserSettings.Default.UseMemoryForSpeed;
 
             SystemEvents.UserPreferenceChanged += new UserPreferenceChangedEventHandler(UserPreferenceChanged);
 
@@ -86,6 +90,10 @@ namespace RunCat365
                 f => ChangeFPSMaxLimit(f),
                 () => launchAtStartupManager.GetStartup(),
                 s => launchAtStartupManager.SetStartup(s),
+                () => useGpuForSpeed,
+                b => ChangeUseGpuForSpeed(b),
+                () => useMemoryForSpeed,
+                b => ChangeUseMemoryForSpeed(b),
                 () => OpenRepository(),
                 () => Application.Exit()
             );
@@ -173,6 +181,20 @@ namespace RunCat365
             UserSettings.Default.Save();
         }
 
+        private void ChangeUseGpuForSpeed(bool value)
+        {
+            useGpuForSpeed = value;
+            UserSettings.Default.UseGpuForSpeed = value;
+            UserSettings.Default.Save();
+        }
+
+        private void ChangeUseMemoryForSpeed(bool value)
+        {
+            useMemoryForSpeed = value;
+            UserSettings.Default.UseMemoryForSpeed = value;
+            UserSettings.Default.Save();
+        }
+
         private void AnimationTick(object? sender, EventArgs e)
         {
             contextMenuManager.AdvanceFrame();
@@ -197,13 +219,12 @@ namespace RunCat365
             contextMenuManager.SetSystemInfoMenuText(string.Join("\n", [.. systemInfoValues]));
         }
 
-        private int CalculateInterval(float cpuTotalValue, float gpuTotalValue)
+        private int CalculateInterval(float cpuValue, float gpuValue, float memoryValue)
         {
-            // Use the higher load between CPU and GPU to drive the cat speed
-            var maxLoad = Math.Max(cpuTotalValue, gpuTotalValue);
-            
-            // Range of interval: 25-500 (ms) = 2-40 (fps)
-            var speed = (float)Math.Max(1.0f, (maxLoad / 5.0f) * fpsMaxLimit.GetRate());
+            var load = cpuValue;
+            if (useGpuForSpeed) load = Math.Max(load, gpuValue);
+            if (useMemoryForSpeed) load = Math.Max(load, memoryValue);
+            var speed = (float)Math.Max(1.0f, (load / 5.0f) * fpsMaxLimit.GetRate());
             return (int)(500.0f / speed);
         }
 
@@ -223,7 +244,7 @@ namespace RunCat365
             FetchSystemInfo(cpuInfo, memoryInfo, storageInfo, networkInfo, gpuInfo);
 
             animateTimer.Stop();
-            animateTimer.Interval = CalculateInterval(cpuInfo.Total, gpuInfo.Utilization);
+            animateTimer.Interval = CalculateInterval(cpuInfo.Total, gpuInfo.Utilization, memoryInfo.MemoryLoad);
             animateTimer.Start();
         }
 

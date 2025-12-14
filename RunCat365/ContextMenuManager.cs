@@ -36,6 +36,10 @@ namespace RunCat365
             Action<FPSMaxLimit> setFPSMaxLimit,
             Func<bool> getLaunchAtStartup,
             Func<bool, bool> toggleLaunchAtStartup,
+            Func<bool> getUseGpuForSpeed,
+            Action<bool> setUseGpuForSpeed,
+            Func<bool> getUseMemoryForSpeed,
+            Action<bool> setUseMemoryForSpeed,
             Action openRepository,
             Action onExit
         )
@@ -99,11 +103,39 @@ namespace RunCat365
             };
             launchAtStartupMenu.Click += (sender, e) => HandleStartupMenuClick(sender, toggleLaunchAtStartup);
 
+            var useGpuForSpeedMenu = new CustomToolStripMenuItem("GPU affects speed")
+            {
+                Checked = getUseGpuForSpeed()
+            };
+            useGpuForSpeedMenu.Click += (sender, e) =>
+            {
+                if (sender is ToolStripMenuItem item)
+                {
+                    item.Checked = !item.Checked;
+                    setUseGpuForSpeed(item.Checked);
+                }
+            };
+
+            var useMemoryForSpeedMenu = new CustomToolStripMenuItem("Memory affects speed")
+            {
+                Checked = getUseMemoryForSpeed()
+            };
+            useMemoryForSpeedMenu.Click += (sender, e) =>
+            {
+                if (sender is ToolStripMenuItem item)
+                {
+                    item.Checked = !item.Checked;
+                    setUseMemoryForSpeed(item.Checked);
+                }
+            };
+
             var settingsMenu = new CustomToolStripMenuItem("Settings");
             settingsMenu.DropDownItems.AddRange(
                 themeMenu,
                 fpsMaxLimitMenu,
-                launchAtStartupMenu
+                launchAtStartupMenu,
+                useGpuForSpeedMenu,
+                useMemoryForSpeedMenu
             );
 
             var endlessGameMenu = new CustomToolStripMenuItem("Endless Game");

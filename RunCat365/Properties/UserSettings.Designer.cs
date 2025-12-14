@@ -70,5 +70,29 @@ namespace RunCat365.Properties {
                 this["FirstLaunch"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool UseGpuForSpeed {
+            get {
+                return ((bool)(this["UseGpuForSpeed"]));
+            }
+            set {
+                this["UseGpuForSpeed"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool UseMemoryForSpeed {
+            get {
+                return ((bool)(this["UseMemoryForSpeed"]));
+            }
+            set {
+                this["UseMemoryForSpeed"] = value;
+            }
+        }
     }
 }
