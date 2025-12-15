@@ -1,49 +1,58 @@
-using LibreHardwareMonitor.Hardware;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 
 namespace RunCat365
 {
     internal class GPURepository
     {
-        private Computer computer;
-        private IHardware gpu;
+        private PerformanceCounter gpuCounter;
         private bool isGpuAvailable = true;
+        private readonly List<float> gpuInfoList = new List<float>();
+        private const int GPU_INFO_LIST_LIMIT_SIZE = 5;
+
+        public bool IsAvailable => isGpuAvailable;
 
         public GPURepository()
         {
             try
             {
-                computer = new Computer
-                {
-                    IsGpuEnabled = true
-                };
-                computer.Open();
-
-                gpu = computer.Hardware.FirstOrDefault(h => h.HardwareType == HardwareType.GpuNvidia ||
-                                                          h.HardwareType == HardwareType.GpuAmd ||
-                                                          h.HardwareType == HardwareType.GpuIntel);
+                // try to find a gpu engine counter (windows 10+)
+                var category = new PerformanceCounterCategory("GPU Engine");
+                var instanceNames = category.GetInstanceNames();
                 
-                if (gpu == null)
+                // look for 3d engine usage
+                var instance = instanceNames.FirstOrDefault(n => n.Contains("engtype_3D"));
+                if (instance != null)
+                {
+                    gpuCounter = new PerformanceCounter("GPU Engine", "Utilization Percentage", instance);
+                    _ = gpuCounter.NextValue(); // discard first value
+                }
+                else
                 {
                     isGpuAvailable = false;
                 }
             }
-            catch (Exception)
+            catch
             {
-                // disable gpu if it fails (e.g. no admin rights)
+                // gpu counters not available on this system
                 isGpuAvailable = false;
-                computer = null;
             }
         }
 
         public void Update()
         {
-            if (!isGpuAvailable || gpu == null) return;
+            if (!isGpuAvailable || gpuCounter == null) return;
+            
             try
             {
-                gpu.Update();
+                var value = Math.Min(100, gpuCounter.NextValue());
+                gpuInfoList.Add(value);
+                if (GPU_INFO_LIST_LIMIT_SIZE < gpuInfoList.Count)
+                {
+                    gpuInfoList.RemoveAt(0);
+                }
             }
             catch
             {
@@ -53,28 +62,16 @@ namespace RunCat365
 
         public GPUInfo Get()
         {
-            if (!isGpuAvailable || gpu == null)
+            if (!isGpuAvailable || gpuInfoList.Count == 0)
             {
                 return new GPUInfo(0);
             }
-
-            try
-            {
-                var loadSensor = gpu.Sensors.FirstOrDefault(s => s.SensorType == SensorType.Load);
-                float value = loadSensor?.Value ?? 0;
-                return new GPUInfo(value);
-            }
-            catch
-            {
-                // something went wrong, just stop trying
-                isGpuAvailable = false;
-                return new GPUInfo(0);
-            }
+            return new GPUInfo(gpuInfoList.Average());
         }
 
         public void Close()
         {
-            computer?.Close();
+            gpuCounter?.Close();
         }
     }
 

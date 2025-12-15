@@ -30,7 +30,6 @@
 
   <ItemGroup>
     <Content Include="resources\app_icon.ico" />
-    <PackageReference Include="LibreHardwareMonitorLib" Version="0.9.3" />
   </ItemGroup>
 
   <ItemGroup>

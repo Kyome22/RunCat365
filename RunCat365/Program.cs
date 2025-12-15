@@ -58,8 +58,7 @@ namespace RunCat365
         private Runner runner = Runner.Cat;
         private Theme manualTheme = Theme.System;
         private FPSMaxLimit fpsMaxLimit = FPSMaxLimit.FPS40;
-        private bool useGpuForSpeed = false;
-        private bool useMemoryForSpeed = false;
+        private SpeedSource speedSource = SpeedSource.CPU;
         private int fetchCounter = 5;
 
         public RunCat365ApplicationContext()
@@ -68,8 +67,7 @@ namespace RunCat365
             _ = Enum.TryParse(UserSettings.Default.Runner, out runner);
             _ = Enum.TryParse(UserSettings.Default.Theme, out manualTheme);
             _ = Enum.TryParse(UserSettings.Default.FPSMaxLimit, out fpsMaxLimit);
-            useGpuForSpeed = UserSettings.Default.UseGpuForSpeed;
-            useMemoryForSpeed = UserSettings.Default.UseMemoryForSpeed;
+            _ = SpeedSourceExtension.TryParse(UserSettings.Default.SpeedSource, out speedSource);
 
             SystemEvents.UserPreferenceChanged += new UserPreferenceChangedEventHandler(UserPreferenceChanged);
 
@@ -90,10 +88,9 @@ namespace RunCat365
                 f => ChangeFPSMaxLimit(f),
                 () => launchAtStartupManager.GetStartup(),
                 s => launchAtStartupManager.SetStartup(s),
-                () => useGpuForSpeed,
-                b => ChangeUseGpuForSpeed(b),
-                () => useMemoryForSpeed,
-                b => ChangeUseMemoryForSpeed(b),
+                () => speedSource,
+                s => ChangeSpeedSource(s),
+                gpuRepository.IsAvailable,
                 () => OpenRepository(),
                 () => Application.Exit()
             );
@@ -181,17 +178,10 @@ namespace RunCat365
             UserSettings.Default.Save();
         }
 
-        private void ChangeUseGpuForSpeed(bool value)
+        private void ChangeSpeedSource(SpeedSource source)
         {
-            useGpuForSpeed = value;
-            UserSettings.Default.UseGpuForSpeed = value;
-            UserSettings.Default.Save();
-        }
-
-        private void ChangeUseMemoryForSpeed(bool value)
-        {
-            useMemoryForSpeed = value;
-            UserSettings.Default.UseMemoryForSpeed = value;
+            speedSource = source;
+            UserSettings.Default.SpeedSource = source.GetString();
             UserSettings.Default.Save();
         }
 
@@ -221,9 +211,12 @@ namespace RunCat365
 
         private int CalculateInterval(float cpuValue, float gpuValue, float memoryValue)
         {
-            var load = cpuValue;
-            if (useGpuForSpeed) load = Math.Max(load, gpuValue);
-            if (useMemoryForSpeed) load = Math.Max(load, memoryValue);
+            var load = speedSource switch
+            {
+                SpeedSource.GPU => gpuValue,
+                SpeedSource.Memory => memoryValue,
+                _ => cpuValue
+            };
             var speed = (float)Math.Max(1.0f, (load / 5.0f) * fpsMaxLimit.GetRate());
             return (int)(500.0f / speed);
         }

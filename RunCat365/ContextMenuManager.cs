@@ -36,10 +36,9 @@ namespace RunCat365
             Action<FPSMaxLimit> setFPSMaxLimit,
             Func<bool> getLaunchAtStartup,
             Func<bool, bool> toggleLaunchAtStartup,
-            Func<bool> getUseGpuForSpeed,
-            Action<bool> setUseGpuForSpeed,
-            Func<bool> getUseMemoryForSpeed,
-            Action<bool> setUseMemoryForSpeed,
+            Func<SpeedSource> getSpeedSource,
+            Action<SpeedSource> setSpeedSource,
+            bool isGpuAvailable,
             Action openRepository,
             Action onExit
         )
@@ -103,39 +102,37 @@ namespace RunCat365
             };
             launchAtStartupMenu.Click += (sender, e) => HandleStartupMenuClick(sender, toggleLaunchAtStartup);
 
-            var useGpuForSpeedMenu = new CustomToolStripMenuItem("GPU affects speed")
+            var speedSourceMenu = new CustomToolStripMenuItem("Speed based on");
+            var cpuSpeedItem = new CustomToolStripMenuItem("CPU")
             {
-                Checked = getUseGpuForSpeed()
+                Checked = getSpeedSource() == SpeedSource.CPU
             };
-            useGpuForSpeedMenu.Click += (sender, e) =>
-            {
-                if (sender is ToolStripMenuItem item)
-                {
-                    item.Checked = !item.Checked;
-                    setUseGpuForSpeed(item.Checked);
-                }
-            };
+            cpuSpeedItem.Click += (sender, e) => HandleSpeedSourceClick(speedSourceMenu, sender, SpeedSource.CPU, setSpeedSource);
+            speedSourceMenu.DropDownItems.Add(cpuSpeedItem);
 
-            var useMemoryForSpeedMenu = new CustomToolStripMenuItem("Memory affects speed")
+            if (isGpuAvailable)
             {
-                Checked = getUseMemoryForSpeed()
-            };
-            useMemoryForSpeedMenu.Click += (sender, e) =>
-            {
-                if (sender is ToolStripMenuItem item)
+                var gpuSpeedItem = new CustomToolStripMenuItem("GPU")
                 {
-                    item.Checked = !item.Checked;
-                    setUseMemoryForSpeed(item.Checked);
-                }
+                    Checked = getSpeedSource() == SpeedSource.GPU
+                };
+                gpuSpeedItem.Click += (sender, e) => HandleSpeedSourceClick(speedSourceMenu, sender, SpeedSource.GPU, setSpeedSource);
+                speedSourceMenu.DropDownItems.Add(gpuSpeedItem);
+            }
+
+            var memorySpeedItem = new CustomToolStripMenuItem("Memory")
+            {
+                Checked = getSpeedSource() == SpeedSource.Memory
             };
+            memorySpeedItem.Click += (sender, e) => HandleSpeedSourceClick(speedSourceMenu, sender, SpeedSource.Memory, setSpeedSource);
+            speedSourceMenu.DropDownItems.Add(memorySpeedItem);
 
             var settingsMenu = new CustomToolStripMenuItem("Settings");
             settingsMenu.DropDownItems.AddRange(
                 themeMenu,
                 fpsMaxLimitMenu,
                 launchAtStartupMenu,
-                useGpuForSpeedMenu,
-                useMemoryForSpeedMenu
+                speedSourceMenu
             );
 
             var endlessGameMenu = new CustomToolStripMenuItem("Endless Game");
@@ -200,6 +197,22 @@ namespace RunCat365
             {
                 assignValueAction(parsedValue);
             }
+        }
+
+        private static void HandleSpeedSourceClick(
+            ToolStripMenuItem parentMenu,
+            object? sender,
+            SpeedSource source,
+            Action<SpeedSource> setSpeedSource
+        )
+        {
+            if (sender is null) return;
+            foreach (ToolStripMenuItem childItem in parentMenu.DropDownItems)
+            {
+                childItem.Checked = false;
+            }
+            ((ToolStripMenuItem)sender).Checked = true;
+            setSpeedSource(source);
         }
 
         private static Bitmap? GetRunnerThumbnailBitmap(Theme systemTheme, Runner runner)
