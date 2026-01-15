@@ -64,6 +64,7 @@ namespace RunCat365
         private Runner runner = Runner.Cat;
         private Theme manualTheme = Theme.System;
         private FPSMaxLimit fpsMaxLimit = FPSMaxLimit.FPS40;
+        private SpeedSource speedSource = SpeedSource.CPU;
         private int fetchCounter = 5;
 
         public RunCat365ApplicationContext()
@@ -72,6 +73,7 @@ namespace RunCat365
             _ = Enum.TryParse(UserSettings.Default.Runner, out runner);
             _ = Enum.TryParse(UserSettings.Default.Theme, out manualTheme);
             _ = Enum.TryParse(UserSettings.Default.FPSMaxLimit, out fpsMaxLimit);
+            _ = SpeedSourceExtension.TryParse(UserSettings.Default.SpeedSource, out speedSource);
 
             SystemEvents.UserPreferenceChanged += new UserPreferenceChangedEventHandler(UserPreferenceChanged);
 
@@ -92,6 +94,9 @@ namespace RunCat365
                 f => ChangeFPSMaxLimit(f),
                 () => launchAtStartupManager.GetStartup(),
                 s => launchAtStartupManager.SetStartup(s),
+                () => speedSource,
+                s => ChangeSpeedSource(s),
+                gpuRepository.IsAvailable,
                 () => OpenRepository(),
                 () => Application.Exit()
             );
@@ -179,6 +184,13 @@ namespace RunCat365
             UserSettings.Default.Save();
         }
 
+        private void ChangeSpeedSource(SpeedSource source)
+        {
+            speedSource = source;
+            UserSettings.Default.SpeedSource = source.GetString();
+            UserSettings.Default.Save();
+        }
+
         private void AnimationTick(object? sender, EventArgs e)
         {
             contextMenuManager.AdvanceFrame();
@@ -206,10 +218,15 @@ namespace RunCat365
             contextMenuManager.SetSystemInfoMenuText(string.Join("\n", [.. systemInfoValues]));
         }
 
-        private int CalculateInterval(float cpuTotalValue)
+        private int CalculateInterval(float cpuValue, float gpuValue, float memoryValue)
         {
-            // Range of interval: 25-500 (ms) = 2-40 (fps)
-            var speed = (float)Math.Max(1.0f, (cpuTotalValue / 5.0f) * fpsMaxLimit.GetRate());
+            var load = speedSource switch
+            {
+                SpeedSource.GPU => gpuValue,
+                SpeedSource.Memory => memoryValue,
+                _ => cpuValue
+            };
+            var speed = (float)Math.Max(1.0f, (load / 5.0f) * fpsMaxLimit.GetRate());
             return (int)(500.0f / speed);
         }
 
@@ -229,7 +246,7 @@ namespace RunCat365
             FetchSystemInfo(cpuInfo, gpuInfo, memoryInfo, storageInfo, networkInfo);
 
             animateTimer.Stop();
-            animateTimer.Interval = CalculateInterval(cpuInfo.Total);
+            animateTimer.Interval = CalculateInterval(cpuInfo.Total, gpuInfo.Total, memoryInfo.MemoryLoad);
             animateTimer.Start();
         }
 

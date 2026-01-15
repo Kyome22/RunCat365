@@ -36,6 +36,9 @@ namespace RunCat365
             Action<FPSMaxLimit> setFPSMaxLimit,
             Func<bool> getLaunchAtStartup,
             Func<bool, bool> toggleLaunchAtStartup,
+            Func<SpeedSource> getSpeedSource,
+            Action<SpeedSource> setSpeedSource,
+            bool isGpuAvailable,
             Action openRepository,
             Action onExit
         )
@@ -99,11 +102,37 @@ namespace RunCat365
             };
             launchAtStartupMenu.Click += (sender, e) => HandleStartupMenuClick(sender, toggleLaunchAtStartup);
 
+            var speedSourceMenu = new CustomToolStripMenuItem("Speed based on");
+            var cpuSpeedItem = new CustomToolStripMenuItem("CPU")
+            {
+                Checked = getSpeedSource() == SpeedSource.CPU
+            };
+            cpuSpeedItem.Click += (sender, e) => HandleSpeedSourceClick(speedSourceMenu, sender, SpeedSource.CPU, setSpeedSource);
+            speedSourceMenu.DropDownItems.Add(cpuSpeedItem);
+
+            if (isGpuAvailable)
+            {
+                var gpuSpeedItem = new CustomToolStripMenuItem("GPU")
+                {
+                    Checked = getSpeedSource() == SpeedSource.GPU
+                };
+                gpuSpeedItem.Click += (sender, e) => HandleSpeedSourceClick(speedSourceMenu, sender, SpeedSource.GPU, setSpeedSource);
+                speedSourceMenu.DropDownItems.Add(gpuSpeedItem);
+            }
+
+            var memorySpeedItem = new CustomToolStripMenuItem("Memory")
+            {
+                Checked = getSpeedSource() == SpeedSource.Memory
+            };
+            memorySpeedItem.Click += (sender, e) => HandleSpeedSourceClick(speedSourceMenu, sender, SpeedSource.Memory, setSpeedSource);
+            speedSourceMenu.DropDownItems.Add(memorySpeedItem);
+
             var settingsMenu = new CustomToolStripMenuItem(Strings.Menu_Settings);
             settingsMenu.DropDownItems.AddRange(
                 themeMenu,
                 fpsMaxLimitMenu,
-                launchAtStartupMenu
+                launchAtStartupMenu,
+                speedSourceMenu
             );
 
             var endlessGameMenu = new CustomToolStripMenuItem(Strings.Menu_EndlessGame);
@@ -173,6 +202,22 @@ namespace RunCat365
             {
                 assignValueAction(parsedValue);
             }
+        }
+
+        private static void HandleSpeedSourceClick(
+            ToolStripMenuItem parentMenu,
+            object? sender,
+            SpeedSource source,
+            Action<SpeedSource> setSpeedSource
+        )
+        {
+            if (sender is null) return;
+            foreach (ToolStripMenuItem childItem in parentMenu.DropDownItems)
+            {
+                childItem.Checked = false;
+            }
+            ((ToolStripMenuItem)sender).Checked = true;
+            setSpeedSource(source);
         }
 
         private static Bitmap? GetRunnerThumbnailBitmap(Theme systemTheme, Runner runner)

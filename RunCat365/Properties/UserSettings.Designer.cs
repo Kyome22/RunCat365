@@ -70,5 +70,17 @@ namespace RunCat365.Properties {
                 this["FirstLaunch"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("CPU")]
+        public string SpeedSource {
+            get {
+                return ((string)(this["SpeedSource"]));
+            }
+            set {
+                this["SpeedSource"] = value;
+            }
+        }
     }
 }
