@@ -28,6 +28,7 @@ namespace RunCat365
         private int counter = 0;
         private int limit = 5;
         private int score = 0;
+        private int highScore = UserSettings.Default.HighScore;
         private bool isJumpRequested = false;
         private readonly bool isAutoPlay = false;
 
@@ -103,6 +104,10 @@ namespace RunCat365
             if (firstRoad == Road.Sprout)
             {
                 score += 1;
+                if (score > highScore)
+                {
+                    highScore = score;
+                }
             }
             counter = counter > 0 ? counter - 1 : limit - 1;
             if (counter == 0)
@@ -215,7 +220,8 @@ namespace RunCat365
                     Alignment = StringAlignment.Far,
                     LineAlignment = StringAlignment.Center
                 };
-                g.DrawString($"{Strings.Game_Score}: {score}", font15, brush, new Rectangle(20, 0, 560, 50), stringFormat);
+                g.DrawString($"{Strings.Game_HighScore}: {highScore}", font15, brush, new Rectangle(20, 0, 560, 50), stringFormat);
+                g.DrawString($"{Strings.Game_Score}: {score}", font15, brush, new Rectangle(20, 30, 560, 50), stringFormat);
             }
 
             roads.Take(20).Select((road, index) => new { road, index }).ToList().ForEach(
@@ -243,7 +249,15 @@ namespace RunCat365
                 var message = Strings.Game_PressSpaceToPlay;
                 if (status == GameStatus.GameOver)
                 {
-                    message = $"{Strings.Game_GameOver}\n{message}";
+                    if (score >= highScore)
+                    {
+                        SaveRecord(score);
+                        message = $"{Strings.Game_NewRecord}!!\n{message}";
+                    }
+                    else
+                    {
+                        message = $"{Strings.Game_GameOver}\n{message}";
+                    }
                 }
                 var stringFormat = new StringFormat
                 {
@@ -252,6 +266,11 @@ namespace RunCat365
                 };
                 g.DrawString(message, font18, brush, new Rectangle(0, 0, 600, 250), stringFormat);
             }
+        }
+        private void SaveRecord(int score)
+        {
+            UserSettings.Default.HighScore = score;
+            UserSettings.Default.Save();
         }
     }
 

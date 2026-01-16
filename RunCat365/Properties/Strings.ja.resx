@@ -228,4 +228,10 @@
   <data name="SystemInfo_Maximum" xml:space="preserve">
     <value>最大</value>
   </data>
+  <data name="Game_HighScore" xml:space="preserve">
+    <value>ハイスコア</value>
+  </data>
+  <data name="Game_NewRecord" xml:space="preserve">
+    <value>ニューレコード</value>
+  </data>
 </root>
