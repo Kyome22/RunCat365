@@ -106,6 +106,8 @@ namespace RunCat365
 
             textBrush = new SolidBrush(systemTheme.GetContrastColor());
 
+            PrepareBitmaps();
+
             Paint += RenderScene;
 
             KeyDown += HandleKeyDown;
@@ -138,6 +140,20 @@ namespace RunCat365
             centerAlignFormat.Dispose();
             textBrush.Dispose();
             overlayBrush.Dispose();
+        }
+
+        private void PrepareBitmaps()
+        {
+            using var offscreen = new Bitmap(1, 1);
+            using var g = Graphics.FromImage(offscreen);
+            foreach (var bitmap in catImages.Values)
+            {
+                g.DrawImage(bitmap, 0, 0, 1, 1);
+            }
+            foreach (var bitmap in roadImages.Values)
+            {
+                g.DrawImage(bitmap, 0, 0, 1, 1);
+            }
         }
 
         private void Initialize()
