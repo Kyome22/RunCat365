@@ -16,12 +16,19 @@ namespace RunCat365
 {
     internal abstract class Cat
     {
-        internal abstract List<int> ViolationIndices();
+        internal abstract ReadOnlySpan<int> ViolationIndices();
         internal abstract Cat Next();
         internal abstract string GetString();
 
         internal class Running : Cat
         {
+            private static readonly int[] Frame0Violations = [5, 6, 7];
+            private static readonly int[] Frame1Violations = [5, 6];
+            private static readonly int[] Frame2Violations = [5, 6];
+            private static readonly int[] Frame3Violations = [5];
+            private static readonly int[] Frame4Violations = [5, 7];
+            private static readonly int[] EmptyViolations = [];
+
             internal Frame CurrentFrame { get; }
 
             internal Running(Frame frame)
@@ -29,16 +36,16 @@ namespace RunCat365
                 CurrentFrame = frame;
             }
 
-            internal override List<int> ViolationIndices()
+            internal override ReadOnlySpan<int> ViolationIndices()
             {
                 return CurrentFrame switch
                 {
-                    Frame.Frame0 => [5, 6, 7],
-                    Frame.Frame1 => [5, 6],
-                    Frame.Frame2 => [5, 6],
-                    Frame.Frame3 => [5],
-                    Frame.Frame4 => [5, 7],
-                    _ => [],
+                    Frame.Frame0 => Frame0Violations,
+                    Frame.Frame1 => Frame1Violations,
+                    Frame.Frame2 => Frame2Violations,
+                    Frame.Frame3 => Frame3Violations,
+                    Frame.Frame4 => Frame4Violations,
+                    _ => EmptyViolations,
                 };
             }
 
@@ -65,6 +72,18 @@ namespace RunCat365
 
         internal class Jumping : Cat
         {
+            private static readonly int[] Frame0Violations = [5, 6, 7];
+            private static readonly int[] Frame1Violations = [5, 6];
+            private static readonly int[] Frame2Violations = [5, 6];
+            private static readonly int[] Frame3Violations = [5, 6];
+            private static readonly int[] Frame4Violations = [5, 6];
+            private static readonly int[] Frame5Violations = [5];
+            private static readonly int[] Frame6Violations = [];
+            private static readonly int[] Frame7Violations = [];
+            private static readonly int[] Frame8Violations = [];
+            private static readonly int[] Frame9Violations = [7];
+            private static readonly int[] EmptyViolations = [];
+
             internal Frame CurrentFrame { get; }
 
             internal Jumping(Frame frame)
@@ -72,21 +91,21 @@ namespace RunCat365
                 CurrentFrame = frame;
             }
 
-            internal override List<int> ViolationIndices()
+            internal override ReadOnlySpan<int> ViolationIndices()
             {
                 return CurrentFrame switch
                 {
-                    Frame.Frame0 => [5, 6, 7],
-                    Frame.Frame1 => [5, 6],
-                    Frame.Frame2 => [5, 6],
-                    Frame.Frame3 => [5, 6],
-                    Frame.Frame4 => [5, 6],
-                    Frame.Frame5 => [5],
-                    Frame.Frame6 => [],
-                    Frame.Frame7 => [],
-                    Frame.Frame8 => [],
-                    Frame.Frame9 => [7],
-                    _ => [],
+                    Frame.Frame0 => Frame0Violations,
+                    Frame.Frame1 => Frame1Violations,
+                    Frame.Frame2 => Frame2Violations,
+                    Frame.Frame3 => Frame3Violations,
+                    Frame.Frame4 => Frame4Violations,
+                    Frame.Frame5 => Frame5Violations,
+                    Frame.Frame6 => Frame6Violations,
+                    Frame.Frame7 => Frame7Violations,
+                    Frame.Frame8 => Frame8Violations,
+                    Frame.Frame9 => Frame9Violations,
+                    _ => EmptyViolations,
                 };
             }
 

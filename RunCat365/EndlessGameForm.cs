@@ -28,8 +28,8 @@ namespace RunCat365
         private GameStatus status = GameStatus.NewGame;
         private Cat cat = new Cat.Running(Cat.Running.Frame.Frame0);
         private readonly List<Road> roads = [];
-        private readonly Dictionary<string, Bitmap> catIcons = [];
-        private readonly Dictionary<string, Bitmap> roadIcons = [];
+        private readonly Dictionary<string, Bitmap> catImages = [];
+        private readonly Dictionary<Road, Bitmap> roadImages = [];
         private int counter = 0;
         private int limit = 5;
         private int score = 0;
@@ -80,14 +80,25 @@ namespace RunCat365
                     {
                         if (entry.Value is Bitmap icon)
                         {
-                            catIcons.Add(key, systemTheme == Theme.Light ? new Bitmap(icon) : icon.Recolor(color));
+                            catImages.Add(key, systemTheme == Theme.Light ? new Bitmap(icon) : icon.Recolor(color));
                         }
                     }
-                    else if (key.StartsWith("road"))
+                    else if (key.StartsWith("road_"))
                     {
                         if (entry.Value is Bitmap icon)
                         {
-                            roadIcons.Add(key, systemTheme == Theme.Light ? new Bitmap(icon) : icon.Recolor(color));
+                            var roadType = key switch
+                            {
+                                "road_flat" => Road.Flat,
+                                "road_hill" => Road.Hill,
+                                "road_crater" => Road.Crater,
+                                "road_sprout" => Road.Sprout,
+                                _ => (Road?)null
+                            };
+                            if (roadType.HasValue)
+                            {
+                                roadImages.Add(roadType.Value, systemTheme == Theme.Light ? new Bitmap(icon) : icon.Recolor(color));
+                            }
                         }
                     }
                 }
@@ -116,10 +127,10 @@ namespace RunCat365
             timer.Stop();
             timer.Dispose();
 
-            foreach (var bitmap in catIcons.Values) bitmap.Dispose();
-            foreach (var bitmap in roadIcons.Values) bitmap.Dispose();
-            catIcons.Clear();
-            roadIcons.Clear();
+            foreach (var bitmap in catImages.Values) bitmap.Dispose();
+            foreach (var bitmap in roadImages.Values) bitmap.Dispose();
+            catImages.Clear();
+            roadImages.Clear();
 
             scoreFont.Dispose();
             messageFont.Dispose();
@@ -146,19 +157,15 @@ namespace RunCat365
         private bool Judge()
         {
             if (status != GameStatus.Playing) return false;
-            var sproutIndices = roads
-                .Select((road, index) => { return road == Road.Sprout ? index : (int?)null; })
-                .OfType<int>()
-                .ToList();
-            if (cat.ViolationIndices().HasCommonElements(sproutIndices))
+            foreach (var violationIndex in cat.ViolationIndices())
             {
-                status = GameStatus.GameOver;
-                return false;
+                if (violationIndex < roads.Count && roads[violationIndex] == Road.Sprout)
+                {
+                    status = GameStatus.GameOver;
+                    return false;
+                }
             }
-            else
-            {
-                return true;
-            }
+            return true;
         }
 
         private void UpdateRoads()
@@ -276,15 +283,14 @@ namespace RunCat365
             var roadCount = Math.Min(20, roads.Count);
             for (int i = 0; i < roadCount; i++)
             {
-                var roadFileName = $"road_{roads[i].GetString()}".ToLower();
-                if (roadIcons.TryGetValue(roadFileName, out var roadImage))
+                if (roadImages.TryGetValue(roads[i], out var roadImage))
                 {
                     g.DrawImage(roadImage, new Rectangle(i * 30, 200, 30, 50));
                 }
             }
 
-            var catFileName = $"cat_{cat.GetString()}".ToLower();
-            if (catIcons.TryGetValue(catFileName, out var catImage))
+            var catKey = $"cat_{cat.GetString()}";
+            if (catImages.TryGetValue(catKey, out var catImage))
             {
                 g.DrawImage(catImage, new Rectangle(120, 130, 120, 100));
             }
@@ -313,14 +319,6 @@ namespace RunCat365
         {
             UserSettings.Default.HighScore = score;
             UserSettings.Default.Save();
-        }
-    }
-
-    internal static class ListExtension
-    {
-        internal static bool HasCommonElements(this List<int> list1, List<int> list2)
-        {
-            return list1.Intersect(list2).Any();
         }
     }
 }
