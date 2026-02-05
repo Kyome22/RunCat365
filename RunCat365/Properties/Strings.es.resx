@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Menu_Runners" xml:space="preserve">
+    <value>Corredor</value>
+  </data>
+  <data name="Menu_Theme" xml:space="preserve">
+    <value>Tema</value>
+  </data>
+  <data name="Menu_FPSMaxLimit" xml:space="preserve">
+    <value>Limite Máximo de FPS</value>
+  </data>
+  <data name="Menu_LaunchAtStartup" xml:space="preserve">
+    <value>Ejecutar al inicio</value>
+  </data>
+  <data name="Menu_Settings" xml:space="preserve">
+    <value>Ajustes</value>
+  </data>
+  <data name="Menu_EndlessGame" xml:space="preserve">
+    <value>Juego Sin Fin</value>
+  </data>
+  <data name="Menu_Information" xml:space="preserve">
+    <value>Información</value>
+  </data>
+  <data name="Menu_OpenRepository" xml:space="preserve">
+    <value>Abrir Repositorio</value>
+  </data>
+  <data name="Menu_Exit" xml:space="preserve">
+    <value>Salir</value>
+  </data>
+  <data name="Theme_System" xml:space="preserve">
+    <value>Sistema</value>
+  </data>
+  <data name="Theme_Light" xml:space="preserve">
+    <value>Claro</value>
+  </data>
+  <data name="Theme_Dark" xml:space="preserve">
+    <value>Oscuro</value>
+  </data>
+  <data name="Runner_Cat" xml:space="preserve">
+    <value>Gato</value>
+  </data>
+  <data name="Runner_Parrot" xml:space="preserve">
+    <value>Loro</value>
+  </data>
+  <data name="Runner_Horse" xml:space="preserve">
+    <value>Caballo</value>
+  </data>
+  <data name="Message_AppLaunched" xml:space="preserve">
+    <value>La aplicación se ha iniciado. Si el ícono no aparece en la barra de tareas, puede estar oculto; por favor muévelo manualmente y fíjalo.</value>
+  </data>
+  <data name="Message_Warning" xml:space="preserve">
+    <value>Advertencia</value>
+  </data>
+  <data name="Window_EndlessGame" xml:space="preserve">
+    <value>Juego Sin Fin</value>
+  </data>
+  <data name="Game_Score" xml:space="preserve">
+    <value>Puntuación</value>
+  </data>
+  <data name="Game_PressSpaceToPlay" xml:space="preserve">
+    <value>Presiona espacio para jugar.</value>
+  </data>
+  <data name="Game_GameOver" xml:space="preserve">
+    <value>FIN DEL JUEGO</value>
+  </data>
+  <data name="SystemInfo_CPU" xml:space="preserve">
+    <value>CPU</value>
+  </data>
+  <data name="SystemInfo_User" xml:space="preserve">
+    <value>Usuario</value>
+  </data>
+  <data name="SystemInfo_Kernel" xml:space="preserve">
+    <value>Núcleo</value>
+  </data>
+  <data name="SystemInfo_Available" xml:space="preserve">
+    <value>Disponible</value>
+  </data>
+  <data name="SystemInfo_GPU" xml:space="preserve">
+    <value>GPU</value>
+  </data>
+  <data name="SystemInfo_Average" xml:space="preserve">
+    <value>Promedio</value>
+  </data>
+  <data name="SystemInfo_Maximum" xml:space="preserve">
+    <value>Máximo</value>
+  </data>
+  <data name="SystemInfo_Memory" xml:space="preserve">
+    <value>Memoria</value>
+  </data>
+  <data name="SystemInfo_Total" xml:space="preserve">
+    <value>Total</value>
+  </data>
+  <data name="SystemInfo_Used" xml:space="preserve">
+    <value>Usado</value>
+  </data>
+  <data name="SystemInfo_Storage" xml:space="preserve">
+    <value>Almacenamiento</value>
+  </data>
+  <data name="SystemInfo_DriveC" xml:space="preserve">
+    <value>Disco C</value>
+  </data>
+  <data name="SystemInfo_DriveD" xml:space="preserve">
+    <value>Disco D</value>
+  </data>
+  <data name="SystemInfo_Network" xml:space="preserve">
+    <value>Red</value>
+  </data>
+  <data name="SystemInfo_Sent" xml:space="preserve">
+    <value>Enviado</value>
+  </data>
+  <data name="SystemInfo_Received" xml:space="preserve">
+    <value>Recibido</value>
+  </data>
+  <data name="Message_CPUUsageUnavailable" xml:space="preserve">
+    <value>No se pudo obtener el uso de la CPU. No es posible actualizar la velocidad del corredor.</value>
+  </data>
+  <data name="Menu_SpeedSource" xml:space="preserve">
+    <value>Velocidad basada en</value>
+  </data>
+  <data name="Game_HighScore" xml:space="preserve">
+    <value>Mejor Puntaje</value>
+  </data>
+  <data name="Game_NewRecord" xml:space="preserve">
+    <value>Nuevo Récord</value>
+  </data>
+</root>

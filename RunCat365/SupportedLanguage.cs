@@ -20,6 +20,7 @@ namespace RunCat365
     {
         English,
         Japanese,
+        Spanish,
     }
 
     internal static class SupportedLanguageExtension
@@ -30,6 +31,7 @@ namespace RunCat365
             return culture.TwoLetterISOLanguageName switch
             {
                 "ja" => SupportedLanguage.Japanese,
+                "es" => SupportedLanguage.Spanish,
                 _ => SupportedLanguage.English,
             };
         }
@@ -39,6 +41,7 @@ namespace RunCat365
             return language switch
             {
                 SupportedLanguage.Japanese => new CultureInfo("ja-JP"),
+                SupportedLanguage.Spanish => new CultureInfo("es-ES"),
                 _ => new CultureInfo("en-US"),
             };
         }
@@ -48,6 +51,7 @@ namespace RunCat365
             return language switch
             {
                 SupportedLanguage.Japanese => "Noto Sans JP",
+                SupportedLanguage.Spanish => "Consolas",
                 _ => "Consolas",
             };
         }
@@ -57,6 +61,7 @@ namespace RunCat365
             return language switch
             {
                 SupportedLanguage.Japanese => true,
+                SupportedLanguage.Spanish => false,
                 _ => false,
             };
         }

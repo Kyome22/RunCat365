@@ -31,7 +31,7 @@ RunCat 365 is available for installation on the Microsoft Store.
 
 - Requirement: Windows 10 version 19041.0 or higher
 - Microsoft Store: https://apps.microsoft.com/detail/9nw5lpnvwfwj
-- Language: English, Japanese
+- Language: English, Japanese, Spanish
 
 ## Contributors
 
