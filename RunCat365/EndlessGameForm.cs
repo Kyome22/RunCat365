@@ -36,6 +36,21 @@ namespace RunCat365
         private int highScore = UserSettings.Default.HighScore;
         private bool isJumpRequested = false;
         private readonly bool isAutoPlay = false;
+        private readonly Random random = new();
+        private readonly Font scoreFont = new("Consolas", 15);
+        private readonly Font messageFont = new("Segoe UI", 16, FontStyle.Bold);
+        private readonly StringFormat rightAlignFormat = new()
+        {
+            Alignment = StringAlignment.Far,
+            LineAlignment = StringAlignment.Center
+        };
+        private readonly StringFormat centerAlignFormat = new()
+        {
+            Alignment = StringAlignment.Center,
+            LineAlignment = StringAlignment.Center
+        };
+        private readonly SolidBrush overlayBrush = new(Color.FromArgb(77, 0, 0, 0));
+        private SolidBrush textBrush = null!;
 
         internal EndlessGameForm(Theme systemTheme)
         {
@@ -78,6 +93,8 @@ namespace RunCat365
                 }
             }
 
+            textBrush = new SolidBrush(systemTheme.GetContrastColor());
+
             Paint += RenderScene;
 
             KeyDown += HandleKeyDown;
@@ -103,6 +120,13 @@ namespace RunCat365
             foreach (var bitmap in roadIcons.Values) bitmap.Dispose();
             catIcons.Clear();
             roadIcons.Clear();
+
+            scoreFont.Dispose();
+            messageFont.Dispose();
+            rightAlignFormat.Dispose();
+            centerAlignFormat.Dispose();
+            textBrush.Dispose();
+            overlayBrush.Dispose();
         }
 
         private void Initialize()
@@ -112,9 +136,11 @@ namespace RunCat365
             score = 0;
             cat = new Cat.Running(Cat.Running.Frame.Frame0);
             roads.RemoveAll(r => r == Road.Sprout);
-            Enumerable.Range(0, 20 - roads.Count).ToList().ForEach(
-                _ => roads.Add((Road)(new Random().Next(0, 3)))
-            );
+            var roadsToAdd = 20 - roads.Count;
+            for (int i = 0; i < roadsToAdd; i++)
+            {
+                roads.Add((Road)random.Next(0, 3));
+            }
         }
 
         private bool Judge()
@@ -147,7 +173,7 @@ namespace RunCat365
             counter = counter > 0 ? counter - 1 : limit - 1;
             if (counter == 0)
             {
-                var randomValue = new Random().Next(0, 27);
+                var randomValue = random.Next(0, 27);
                 var subRoads = new List<Road>();
                 if (randomValue % 3 == 0)
                 {
@@ -166,7 +192,7 @@ namespace RunCat365
             }
             if (roads.Count < 20)
             {
-                roads.Add((Road)(new Random().Next(0, 3)));
+                roads.Add((Road)random.Next(0, 3));
             }
         }
 
@@ -242,42 +268,31 @@ namespace RunCat365
 
         private void RenderScene(object? sender, PaintEventArgs e)
         {
-            var rm = Resources.ResourceManager;
-            var textColor = systemTheme.GetContrastColor();
             var g = e.Graphics;
 
-            using (Font font15 = new("Consolas", 15))
-            using (Brush brush = new SolidBrush(textColor))
+            g.DrawString($"{Strings.Game_HighScore}: {highScore}", scoreFont, textBrush, new Rectangle(20, 0, 560, 50), rightAlignFormat);
+            g.DrawString($"{Strings.Game_Score}: {score}", scoreFont, textBrush, new Rectangle(20, 30, 560, 50), rightAlignFormat);
+
+            var roadCount = Math.Min(20, roads.Count);
+            for (int i = 0; i < roadCount; i++)
             {
-                var stringFormat = new StringFormat
+                var roadFileName = $"road_{roads[i].GetString()}".ToLower();
+                if (roadIcons.TryGetValue(roadFileName, out var roadImage))
                 {
-                    Alignment = StringAlignment.Far,
-                    LineAlignment = StringAlignment.Center
-                };
-                g.DrawString($"{Strings.Game_HighScore}: {highScore}", font15, brush, new Rectangle(20, 0, 560, 50), stringFormat);
-                g.DrawString($"{Strings.Game_Score}: {score}", font15, brush, new Rectangle(20, 30, 560, 50), stringFormat);
+                    g.DrawImage(roadImage, new Rectangle(i * 30, 200, 30, 50));
+                }
             }
 
-            roads.Take(20).Select((road, index) => new { road, index }).ToList().ForEach(
-                item =>
-                {
-                    var fileName = $"road_{item.road.GetString()}".ToLower();
-                    if (!roadIcons.TryGetValue(fileName, out Bitmap? image)) return;
-                    g.DrawImage(image, new Rectangle(item.index * 30, 200, 30, 50));
-                }
-            );
-
-            var fileName = $"cat_{cat.GetString()}".ToLower();
-            if (!catIcons.TryGetValue(fileName, out Bitmap? image)) return;
-            g.DrawImage(image, new Rectangle(120, 130, 120, 100));
+            var catFileName = $"cat_{cat.GetString()}".ToLower();
+            if (catIcons.TryGetValue(catFileName, out var catImage))
+            {
+                g.DrawImage(catImage, new Rectangle(120, 130, 120, 100));
+            }
 
             if (status != GameStatus.Playing)
             {
-                using Brush fillBrush = new SolidBrush(Color.FromArgb(77, 0, 0, 0));
-                g.FillRectangle(fillBrush, new Rectangle(0, 0, 600, 250));
+                g.FillRectangle(overlayBrush, new Rectangle(0, 0, 600, 250));
 
-                using Font font18 = new("Segoe UI", 16, FontStyle.Bold);
-                using Brush brush = new SolidBrush(textColor);
                 var message = Strings.Game_PressSpaceToPlay;
                 if (status == GameStatus.GameOver)
                 {
@@ -291,12 +306,7 @@ namespace RunCat365
                         message = $"{Strings.Game_GameOver}\n{message}";
                     }
                 }
-                var stringFormat = new StringFormat
-                {
-                    Alignment = StringAlignment.Center,
-                    LineAlignment = StringAlignment.Center
-                };
-                g.DrawString(message, font18, brush, new Rectangle(0, 0, 600, 250), stringFormat);
+                g.DrawString(message, messageFont, textBrush, new Rectangle(0, 0, 600, 250), centerAlignFormat);
             }
         }
         private void SaveRecord(int score)
