@@ -13,7 +13,7 @@
 //    limitations under the License.
 
 using RunCat365.Properties;
-using System.Diagnostics;
+using System.Runtime.InteropServices;
 
 namespace RunCat365
 {
@@ -45,71 +45,69 @@ namespace RunCat365
         }
     }
 
-    internal class CPUPerformanceCounters
-    {
-        internal PerformanceCounter Total { get; }
-        internal PerformanceCounter User { get; }
-        internal PerformanceCounter Kernel { get; }
-        internal PerformanceCounter Idle { get; }
-
-        private CPUPerformanceCounters()
-        {
-            Total = new PerformanceCounter("Processor", "% Processor Time", "_Total");
-            User = new PerformanceCounter("Processor", "% User Time", "_Total");
-            Kernel = new PerformanceCounter("Processor", "% Privileged Time", "_Total");
-            Idle = new PerformanceCounter("Processor", "% Idle Time", "_Total");
-
-            // Discards first return value
-            _ = Total.NextValue();
-            _ = User.NextValue();
-            _ = Kernel.NextValue();
-            _ = Idle.NextValue();
-        }
-
-        internal static CPUPerformanceCounters? TryCreate()
-        {
-            try
-            {
-                return new CPUPerformanceCounters();
-            }
-            catch
-            {
-                return null;
-            }
-        }
-
-        internal void Close()
-        {
-            Total.Close();
-            User.Close();
-            Kernel.Close();
-            Idle.Close();
-        }
-    }
-
     internal class CPURepository
     {
-        private readonly CPUPerformanceCounters? counters;
+        [DllImport("kernel32.dll", SetLastError = true)]
+        private static extern bool GetSystemTimes(
+            out long idleTime,
+            out long kernelTime,
+            out long userTime);
+
+        private long prevIdleTime;
+        private long prevKernelTime;
+        private long prevUserTime;
+        private bool hasPreviousSample;
+
         private readonly List<CPUInfo> cpuInfoList = [];
         private const int CPU_INFO_LIST_LIMIT_SIZE = 5;
 
-        internal bool IsAvailable => counters is not null;
+        internal bool IsAvailable { get; }
 
         internal CPURepository()
         {
-            counters = CPUPerformanceCounters.TryCreate();
+            IsAvailable = GetSystemTimes(out prevIdleTime, out prevKernelTime, out prevUserTime);
+            hasPreviousSample = IsAvailable;
         }
 
         internal void Update()
         {
-            if (counters is null) return;
+            if (!IsAvailable) return;
+
+            if (!GetSystemTimes(out long idleTime, out long kernelTime, out long userTime))
+                return;
+
+            if (!hasPreviousSample)
+            {
+                prevIdleTime = idleTime;
+                prevKernelTime = kernelTime;
+                prevUserTime = userTime;
+                hasPreviousSample = true;
+                return;
+            }
+
+            long idleDelta = idleTime - prevIdleTime;
+            long kernelDelta = kernelTime - prevKernelTime;
+            long userDelta = userTime - prevUserTime;
+            long totalDelta = kernelDelta + userDelta;
+
+            prevIdleTime = idleTime;
+            prevKernelTime = kernelTime;
+            prevUserTime = userTime;
+
+            if (totalDelta == 0) return;
+
+            // kernelTime includes idle time, so actual kernel = kernelDelta - idleDelta
+            float idlePercent = (float)idleDelta / totalDelta * 100f;
+            float kernelPercent = (float)(kernelDelta - idleDelta) / totalDelta * 100f;
+            float userPercent = (float)userDelta / totalDelta * 100f;
+            float totalPercent = 100f - idlePercent;
 
             var cpuInfo = new CPUInfo
             {
-                Total = Math.Min(100, counters.Total.NextValue()),
-                User = Math.Min(100, counters.User.NextValue()),
-                Kernel = Math.Min(100, counters.Kernel.NextValue()),
-                Idle = Math.Min(100, counters.Idle.NextValue()),
+                Total = Math.Clamp(totalPercent, 0f, 100f),
+                User = Math.Clamp(userPercent, 0f, 100f),
+                Kernel = Math.Clamp(kernelPercent, 0f, 100f),
+                Idle = Math.Clamp(idlePercent, 0f, 100f),
             };
 
             cpuInfoList.Add(cpuInfo);
@@ -134,7 +132,7 @@ namespace RunCat365
 
         internal void Close()
         {
-            counters?.Close();
+            // No resources to release for GetSystemTimes
         }
     }
 }
