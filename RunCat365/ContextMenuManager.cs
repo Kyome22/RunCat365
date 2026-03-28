@@ -1,4 +1,4 @@
-﻿// Copyright 2025 Takuto Nakamura
+// Copyright 2025 Takuto Nakamura
 //
 //    Licensed under the Apache License, Version 2.0 (the "License");
 //    you may not use this file except in compliance with the License.
@@ -27,13 +27,14 @@ namespace RunCat365
         private EndlessGameForm? endlessGameForm;
 
         internal ContextMenuManager(
-            Func<Runner> getRunner,
-            Action<Runner> setRunner,
+            SpeedSource identity,
+            Func<SpeedSource, Runner> getRunner,
+            Action<SpeedSource, Runner> setRunner,
             Func<Theme> getSystemTheme,
             Func<Theme> getManualTheme,
             Action<Theme> setManualTheme,
-            Func<SpeedSource> getSpeedSource,
-            Action<SpeedSource> setSpeedSource,
+            Func<SpeedSource, bool> isIconActive,
+            Action<SpeedSource, bool> setIconActive,
             Func<SpeedSource, bool> isSpeedSourceAvailable,
             Func<FPSMaxLimit> getFPSMaxLimit,
             Action<FPSMaxLimit> setFPSMaxLimit,
@@ -55,11 +56,11 @@ namespace RunCat365
                         parent,
                         sender,
                         (string? s, out Runner r) => Enum.TryParse(s, out r),
-                        r => setRunner(r)
+                        r => setRunner(identity, r)
                     );
-                    SetIcons(getSystemTheme(), getManualTheme(), getRunner());
+                    SetIcons(getSystemTheme(), getManualTheme(), getRunner(identity));
                 },
-                r => getRunner() == r,
+                r => getRunner(identity) == r,
                 r => GetRunnerThumbnailBitmap(getSystemTheme(), r)
             );
 
@@ -74,28 +75,34 @@ namespace RunCat365
                         (string? s, out Theme t) => Enum.TryParse(s, out t),
                         t => setManualTheme(t)
                     );
-                    SetIcons(getSystemTheme(), getManualTheme(), getRunner());
+                    SetIcons(getSystemTheme(), getManualTheme(), getRunner(identity));
                 },
                 t => getManualTheme() == t,
                 _ => null
             );
 
-            var speedSourceMenu = new CustomToolStripMenuItem(Strings.Menu_SpeedSource);
-            speedSourceMenu.SetupSubMenusFromEnum<SpeedSource>(
+            var activeIconsMenu = new CustomToolStripMenuItem(Strings.Menu_ActiveIcons);
+            activeIconsMenu.SetupCheckboxMenusFromEnum<SpeedSource>(
                 s => s.GetLocalizedString(),
                 (parent, sender, e) =>
                 {
-                    HandleMenuItemSelection<SpeedSource>(
-                        parent,
+                    HandleCheckboxSelection<SpeedSource>(
                         sender,
-                        (string? s, out SpeedSource ss) => Enum.TryParse(s, out ss),
-                        s => setSpeedSource(s)
+                        (ss, checkedState) => setIconActive(ss, checkedState)
                     );
                 },
-                s => getSpeedSource() == s,
-                _ => null,
-                isSpeedSourceAvailable
+                s => isIconActive(s)
             );
+            activeIconsMenu.DropDownOpening += (sender, e) =>
+            {
+                foreach (ToolStripMenuItem item in activeIconsMenu.DropDownItems)
+                {
+                    if (item.Tag is SpeedSource src)
+                    {
+                        item.Checked = isIconActive(src);
+                    }
+                }
+            };
 
             var fpsMaxLimitMenu = new CustomToolStripMenuItem(Strings.Menu_FPSMaxLimit);
             fpsMaxLimitMenu.SetupSubMenusFromEnum<FPSMaxLimit>(
@@ -122,7 +129,7 @@ namespace RunCat365
             var settingsMenu = new CustomToolStripMenuItem(Strings.Menu_Settings);
             settingsMenu.DropDownItems.AddRange(
                 themeMenu,
-                speedSourceMenu,
+                activeIconsMenu,
                 fpsMaxLimitMenu,
                 launchAtStartupMenu
             );
@@ -163,9 +170,9 @@ namespace RunCat365
             );
             contextMenuStrip.Renderer = new ContextMenuRenderer();
 
-            SetIcons(getSystemTheme(), getManualTheme(), getRunner());
+            SetIcons(getSystemTheme(), getManualTheme(), getRunner(identity));
 
-            notifyIcon.Visible = true;
+            notifyIcon.Visible = isIconActive(identity);
             notifyIcon.ContextMenuStrip = contextMenuStrip;
         }
 
@@ -194,6 +201,16 @@ namespace RunCat365
             }
         }
 
+        private static void HandleCheckboxSelection<T>(
+            object? sender,
+            Action<T, bool> toggleValueAction
+        )
+        {
+            if (sender is not ToolStripMenuItem item || item.Tag is not T tagValue) return;
+            item.Checked = !item.Checked;
+            toggleValueAction(tagValue, item.Checked);
+        }
+
         private static Bitmap? GetRunnerThumbnailBitmap(Theme systemTheme, Runner runner)
         {
             var color = systemTheme.GetContrastColor();
@@ -210,19 +227,22 @@ namespace RunCat365
             var runnerName = runner.GetString();
             var rm = Resources.ResourceManager;
             var capacity = runner.GetFrameNumber();
+            var traySize = SystemInformation.SmallIconSize.Width;
             var list = new List<Icon>(capacity);
             for (int i = 0; i < capacity; i++)
             {
                 var iconName = $"{runnerName}_{i}".ToLower();
                 if (rm.GetObject(iconName) is not Bitmap bitmap) continue;
-                if (theme == Theme.Light)
+                if (theme == Theme.Light || runner.IsColorPreserving())
                 {
-                    list.Add(bitmap.ToIcon());
+                    using var scaled = bitmap.ScaleToFit(traySize);
+                    list.Add(scaled.ToIcon());
                 }
                 else
                 {
                     using var recolored = bitmap.Recolor(color);
-                    list.Add(recolored.ToIcon());
+                    using var scaled = recolored.ScaleToFit(traySize);
+                    list.Add(scaled.ToIcon());
                 }
             }
 
@@ -299,6 +319,11 @@ namespace RunCat365
         internal void HideNotifyIcon()
         {
             notifyIcon.Visible = false;
+        }
+
+        internal void ShowNotifyIcon()
+        {
+            notifyIcon.Visible = true;
         }
 
         public void Dispose()

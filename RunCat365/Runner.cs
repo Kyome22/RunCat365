@@ -1,4 +1,4 @@
-﻿// Copyright 2025 Takuto Nakamura
+// Copyright 2025 Takuto Nakamura
 //
 //    Licensed under the Apache License, Version 2.0 (the "License");
 //    you may not use this file except in compliance with the License.
@@ -21,10 +21,22 @@ namespace RunCat365
         Cat,
         Parrot,
         Horse,
+        GamingCat,
+        PartyParrot,
     }
 
     internal static class RunnerExtension
     {
+        internal static bool IsColorPreserving(this Runner runner)
+        {
+            return runner switch
+            {
+                Runner.GamingCat => true,
+                Runner.PartyParrot => true,
+                _ => false,
+            };
+        }
+
         internal static string GetString(this Runner runner)
         {
             return runner switch
@@ -32,6 +44,8 @@ namespace RunCat365
                 Runner.Cat => "Cat",
                 Runner.Parrot => "Parrot",
                 Runner.Horse => "Horse",
+                Runner.GamingCat => "GamingCat",
+                Runner.PartyParrot => "PartyParrot",
                 _ => "",
             };
         }
@@ -43,6 +57,8 @@ namespace RunCat365
                 Runner.Cat => Strings.Runner_Cat,
                 Runner.Parrot => Strings.Runner_Parrot,
                 Runner.Horse => Strings.Runner_Horse,
+                Runner.GamingCat => Strings.Runner_GamingCat,
+                Runner.PartyParrot => Strings.Runner_PartyParrot,
                 _ => "",
             };
         }
@@ -54,6 +70,8 @@ namespace RunCat365
                 Runner.Cat => 5,
                 Runner.Parrot => 10,
                 Runner.Horse => 14,
+                Runner.GamingCat => 10,
+                Runner.PartyParrot => 10,
                 _ => 0,
             };
         }

@@ -395,5 +395,23 @@ namespace RunCat365.Properties {
                 return ResourceManager.GetString("SystemInfo_Maximum", resourceCulture);
             }
         }
+
+        internal static string Runner_GamingCat {
+            get {
+                return ResourceManager.GetString("Runner_GamingCat", resourceCulture);
+            }
+        }
+
+        internal static string Runner_PartyParrot {
+            get {
+                return ResourceManager.GetString("Runner_PartyParrot", resourceCulture);
+            }
+        }
+
+        internal static string Menu_ActiveIcons {
+            get {
+                return ResourceManager.GetString("Menu_ActiveIcons", resourceCulture);
+            }
+        }
     }
 }

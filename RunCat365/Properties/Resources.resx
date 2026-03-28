@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -237,5 +237,65 @@
   </data>
   <data name="parrot_9" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\resources\runners\parrot\parrot_9.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="gamingcat_0" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\runners\gamingcat\gamingcat_0.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="gamingcat_1" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\runners\gamingcat\gamingcat_1.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="gamingcat_2" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\runners\gamingcat\gamingcat_2.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="gamingcat_3" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\runners\gamingcat\gamingcat_3.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="gamingcat_4" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\runners\gamingcat\gamingcat_4.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="gamingcat_5" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\runners\gamingcat\gamingcat_5.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="gamingcat_6" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\runners\gamingcat\gamingcat_6.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="gamingcat_7" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\runners\gamingcat\gamingcat_7.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="gamingcat_8" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\runners\gamingcat\gamingcat_8.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="gamingcat_9" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\runners\gamingcat\gamingcat_9.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="partyparrot_0" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\runners\partyparrot\partyparrot_0.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="partyparrot_1" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\runners\partyparrot\partyparrot_1.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="partyparrot_2" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\runners\partyparrot\partyparrot_2.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="partyparrot_3" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\runners\partyparrot\partyparrot_3.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="partyparrot_4" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\runners\partyparrot\partyparrot_4.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="partyparrot_5" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\runners\partyparrot\partyparrot_5.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="partyparrot_6" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\runners\partyparrot\partyparrot_6.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="partyparrot_7" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\runners\partyparrot\partyparrot_7.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="partyparrot_8" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\runners\partyparrot\partyparrot_8.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="partyparrot_9" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\runners\partyparrot\partyparrot_9.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
 </root>

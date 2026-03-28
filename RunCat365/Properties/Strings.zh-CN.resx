@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -233,5 +233,8 @@
   </data>
   <data name="Game_NewRecord" xml:space="preserve">
     <value>新纪录</value>
+  </data>
+  <data name="Menu_ActiveIcons" xml:space="preserve">
+    <value>活动图标</value>
   </data>
 </root>

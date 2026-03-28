@@ -1,4 +1,4 @@
-﻿// Copyright 2025 Takuto Nakamura
+// Copyright 2025 Takuto Nakamura
 //
 //    Licensed under the Apache License, Version 2.0 (the "License");
 //    you may not use this file except in compliance with the License.
@@ -98,6 +98,27 @@ namespace RunCat365
                 var item = new CustomToolStripMenuItem(
                     entityName,
                     iconImage,
+                    value,
+                    isChecked(value),
+                    (sender, e) => onClick(this, sender, e)
+                );
+                items.Add(item);
+            }
+            DropDownItems.AddRange([.. items]);
+        }
+
+        internal void SetupCheckboxMenusFromEnum<T>(
+            Func<T, string> getTitle,
+            Action<CustomToolStripMenuItem, object?, EventArgs> onClick,
+            Func<T, bool> isChecked
+        ) where T : Enum
+        {
+            var items = new List<CustomToolStripMenuItem>();
+            foreach (T value in Enum.GetValues(typeof(T)))
+            {
+                var item = new CustomToolStripMenuItem(
+                    getTitle(value),
+                    null,
                     value,
                     isChecked(value),
                     (sender, e) => onClick(this, sender, e)

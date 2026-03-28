@@ -1,4 +1,4 @@
-﻿// Copyright 2020 Takuto Nakamura
+// Copyright 2020 Takuto Nakamura
 //
 //    Licensed under the Apache License, Version 2.0 (the "License");
 //    you may not use this file except in compliance with the License.
@@ -33,7 +33,6 @@ namespace RunCat365
             CultureInfo.CurrentUICulture = defaultCultureInfo;
             CultureInfo.CurrentCulture = defaultCultureInfo;
 
-            // Terminate RunCat365 if there's any existing instance.
             using var procMutex = new Mutex(true, "_RUNCAT_MUTEX", out var result);
             if (!result) return;
 
@@ -55,28 +54,47 @@ namespace RunCat365
         private const int FETCH_TIMER_DEFAULT_INTERVAL = 1000;
         private const int FETCH_COUNTER_SIZE = 5;
         private const int ANIMATE_TIMER_DEFAULT_INTERVAL = 200;
+        
         private readonly CPURepository cpuRepository;
         private readonly GPURepository gpuRepository;
         private readonly MemoryRepository memoryRepository;
         private readonly StorageRepository storageRepository;
         private readonly NetworkRepository networkRepository;
         private readonly LaunchAtStartupManager launchAtStartupManager;
-        private readonly ContextMenuManager contextMenuManager;
-        private readonly FormsTimer fetchTimer;
-        private readonly FormsTimer animateTimer;
-        private Runner runner = Runner.Cat;
+
+        private FormsTimer? fetchTimer;
+        private int fetchCounter = 5;
+
+        private ContextMenuManager? cpuContextMenu;
+        private ContextMenuManager? gpuContextMenu;
+        private ContextMenuManager? memoryContextMenu;
+
+        private FormsTimer? cpuAnimateTimer;
+        private FormsTimer? gpuAnimateTimer;
+        private FormsTimer? memoryAnimateTimer;
+
         private Theme manualTheme = Theme.System;
         private FPSMaxLimit fpsMaxLimit = FPSMaxLimit.FPS40;
-        private SpeedSource speedSource = SpeedSource.CPU;
-        private int fetchCounter = 5;
+
+        private bool showCpu = true;
+        private Runner cpuRunner = Runner.Cat;
+        private bool showGpu = false;
+        private Runner gpuRunner = Runner.GamingCat;
+        private bool showMemory = false;
+        private Runner memoryRunner = Runner.PartyParrot;
 
         public RunCat365ApplicationContext()
         {
             UserSettings.Default.Reload();
-            _ = Enum.TryParse(UserSettings.Default.Runner, out runner);
+            showCpu = UserSettings.Default.ShowCPU;
+            _ = Enum.TryParse(UserSettings.Default.CPURunner, out cpuRunner);
+            showGpu = UserSettings.Default.ShowGPU;
+            _ = Enum.TryParse(UserSettings.Default.GPURunner, out gpuRunner);
+            showMemory = UserSettings.Default.ShowMemory;
+            _ = Enum.TryParse(UserSettings.Default.MemoryRunner, out memoryRunner);
+
             _ = Enum.TryParse(UserSettings.Default.Theme, out manualTheme);
             _ = Enum.TryParse(UserSettings.Default.FPSMaxLimit, out fpsMaxLimit);
-            _ = Enum.TryParse(UserSettings.Default.SpeedSource, out speedSource);
 
             SystemEvents.UserPreferenceChanged += new UserPreferenceChangedEventHandler(UserPreferenceChanged);
 
@@ -87,16 +105,32 @@ namespace RunCat365
             networkRepository = new NetworkRepository();
             launchAtStartupManager = new LaunchAtStartupManager();
 
-            ResolveSpeedSource();
+            cpuContextMenu = CreateContextMenu(SpeedSource.CPU);
+            gpuContextMenu = CreateContextMenu(SpeedSource.GPU);
+            memoryContextMenu = CreateContextMenu(SpeedSource.Memory);
 
-            contextMenuManager = new ContextMenuManager(
-                () => runner,
-                r => ChangeRunner(r),
+            cpuAnimateTimer = CreateAnimateTimer(() => cpuContextMenu?.AdvanceFrame());
+            gpuAnimateTimer = CreateAnimateTimer(() => gpuContextMenu?.AdvanceFrame());
+            memoryAnimateTimer = CreateAnimateTimer(() => memoryContextMenu?.AdvanceFrame());
+
+            fetchTimer = new FormsTimer { Interval = FETCH_TIMER_DEFAULT_INTERVAL };
+            fetchTimer.Tick += new EventHandler(FetchTick);
+            fetchTimer.Start();
+
+            ShowBalloonTipIfNeeded();
+        }
+
+        private ContextMenuManager CreateContextMenu(SpeedSource identity)
+        {
+            return new ContextMenuManager(
+                identity,
+                (src) => GetRunner(src),
+                (src, r) => ChangeRunner(src, r),
                 () => GetSystemTheme(),
                 () => manualTheme,
                 t => ChangeManualTheme(t),
-                () => speedSource,
-                s => ChangeSpeedSource(s),
+                (src) => IsIconActive(src),
+                (src, active) => ToggleIconActive(src, active),
                 s => IsSpeedSourceAvailable(s),
                 () => fpsMaxLimit,
                 f => ChangeFPSMaxLimit(f),
@@ -105,22 +139,14 @@ namespace RunCat365
                 () => OpenRepository(),
                 () => Application.Exit()
             );
+        }
 
-            animateTimer = new FormsTimer
-            {
-                Interval = ANIMATE_TIMER_DEFAULT_INTERVAL
-            };
-            animateTimer.Tick += new EventHandler(AnimationTick);
-            animateTimer.Start();
-
-            fetchTimer = new FormsTimer
-            {
-                Interval = FETCH_TIMER_DEFAULT_INTERVAL
-            };
-            fetchTimer.Tick += new EventHandler(FetchTick);
-            fetchTimer.Start();
-
-            ShowBalloonTipIfNeeded();
+        private FormsTimer CreateAnimateTimer(Action advanceFrame)
+        {
+            var timer = new FormsTimer { Interval = ANIMATE_TIMER_DEFAULT_INTERVAL };
+            timer.Tick += (s, e) => advanceFrame();
+            timer.Start();
+            return timer;
         }
 
         private static Theme GetSystemTheme()
@@ -144,23 +170,15 @@ namespace RunCat365
             };
         }
 
-        private void ResolveSpeedSource()
-        {
-            if (!IsSpeedSourceAvailable(speedSource))
-            {
-                ChangeSpeedSource(SpeedSource.CPU);
-            }
-        }
-
         private void ShowBalloonTipIfNeeded()
         {
             if (!cpuRepository.IsAvailable)
             {
-                contextMenuManager.ShowBalloonTip(BalloonTipType.CPUInfoUnavailable);
+                cpuContextMenu?.ShowBalloonTip(BalloonTipType.CPUInfoUnavailable);
             }
             else if (UserSettings.Default.FirstLaunch)
             {
-                contextMenuManager.ShowBalloonTip(BalloonTipType.AppLaunched);
+                cpuContextMenu?.ShowBalloonTip(BalloonTipType.AppLaunched);
                 UserSettings.Default.FirstLaunch = false;
                 UserSettings.Default.Save();
             }
@@ -171,7 +189,9 @@ namespace RunCat365
             if (e.Category == UserPreferenceCategory.General)
             {
                 var systemTheme = GetSystemTheme();
-                contextMenuManager.SetIcons(systemTheme, manualTheme, runner);
+                cpuContextMenu?.SetIcons(systemTheme, manualTheme, cpuRunner);
+                gpuContextMenu?.SetIcons(systemTheme, manualTheme, gpuRunner);
+                memoryContextMenu?.SetIcons(systemTheme, manualTheme, memoryRunner);
             }
         }
 
@@ -191,11 +211,81 @@ namespace RunCat365
             }
         }
 
-        private void ChangeRunner(Runner r)
+        private Runner GetRunner(SpeedSource src) => src switch
         {
-            runner = r;
-            UserSettings.Default.Runner = runner.ToString();
+            SpeedSource.CPU => cpuRunner,
+            SpeedSource.GPU => gpuRunner,
+            SpeedSource.Memory => memoryRunner,
+            _ => Runner.Cat,
+        };
+
+        private void ChangeRunner(SpeedSource src, Runner r)
+        {
+            switch (src)
+            {
+                case SpeedSource.CPU:
+                    cpuRunner = r;
+                    UserSettings.Default.CPURunner = r.ToString();
+                    break;
+                case SpeedSource.GPU:
+                    gpuRunner = r;
+                    UserSettings.Default.GPURunner = r.ToString();
+                    break;
+                case SpeedSource.Memory:
+                    memoryRunner = r;
+                    UserSettings.Default.MemoryRunner = r.ToString();
+                    break;
+            }
             UserSettings.Default.Save();
+        }
+
+        private bool IsIconActive(SpeedSource src) => src switch
+        {
+            SpeedSource.CPU => showCpu,
+            SpeedSource.GPU => showGpu,
+            SpeedSource.Memory => showMemory,
+            _ => false,
+        };
+
+        private void ToggleIconActive(SpeedSource src, bool active)
+        {
+            switch (src)
+            {
+                case SpeedSource.CPU:
+                    showCpu = active;
+                    UserSettings.Default.ShowCPU = active;
+                    break;
+                case SpeedSource.GPU:
+                    showGpu = active;
+                    UserSettings.Default.ShowGPU = active;
+                    break;
+                case SpeedSource.Memory:
+                    showMemory = active;
+                    UserSettings.Default.ShowMemory = active;
+                    break;
+            }
+            if (!showCpu && !showGpu && !showMemory)
+            {
+                showCpu = true;
+                UserSettings.Default.ShowCPU = true;
+            }
+            UserSettings.Default.Save();
+            
+            cpuContextMenu?.HideNotifyIcon();
+            gpuContextMenu?.HideNotifyIcon();
+            memoryContextMenu?.HideNotifyIcon();
+            if (showCpu)
+            {
+                cpuContextMenu?.ShowNotifyIcon();
+            }
+            if (showGpu)
+            {
+                gpuContextMenu?.ShowNotifyIcon();
+            }
+            if (showMemory)
+            {
+                memoryContextMenu?.ShowNotifyIcon();
+            }
         }
 
         private void ChangeManualTheme(Theme t)
@@ -203,13 +293,7 @@ namespace RunCat365
             manualTheme = t;
             UserSettings.Default.Theme = manualTheme.ToString();
             UserSettings.Default.Save();
-        }
-
-        private void ChangeSpeedSource(SpeedSource s)
-        {
-            speedSource = s;
-            UserSettings.Default.SpeedSource = speedSource.ToString();
-            UserSettings.Default.Save();
+            UserPreferenceChanged(this, new UserPreferenceChangedEventArgs(UserPreferenceCategory.General));
         }
 
         private void ChangeFPSMaxLimit(FPSMaxLimit f)
@@ -219,57 +303,10 @@ namespace RunCat365
             UserSettings.Default.Save();
         }
 
-        private void AnimationTick(object? sender, EventArgs e)
+        private int CalculateInterval(float load)
         {
-            contextMenuManager.AdvanceFrame();
-        }
-
-        private string GetInfoDescription(CPUInfo cpuInfo, GPUInfo? gpuInfo, MemoryInfo memoryInfo)
-        {
-            return speedSource switch
-            {
-                SpeedSource.CPU => cpuInfo.GetDescription(),
-                SpeedSource.GPU => gpuInfo?.GetDescription() ?? "",
-                SpeedSource.Memory => memoryInfo.GetDescription(),
-                _ => "",
-            };
-        }
-
-        private int CalculateInterval(CPUInfo cpuInfo, GPUInfo? gpuInfo, MemoryInfo memoryInfo)
-        {
-            var load = speedSource switch
-            {
-                SpeedSource.CPU => cpuInfo.Total,
-                SpeedSource.GPU => gpuInfo?.Maximum ?? 0f,
-                SpeedSource.Memory => memoryInfo.MemoryLoad,
-                _ => 0f,
-            };
             var speed = (float)Math.Max(1.0f, (load / 5.0f) * fpsMaxLimit.GetRate());
             return (int)(500.0f / speed);
-        }
-
-        private int FetchSystemInfo()
-        {
-            var cpuInfo = cpuRepository.Get();
-            var gpuInfo = gpuRepository.Get();
-            var memoryInfo = memoryRepository.Get();
-            var storageInfo = storageRepository.Get();
-            var networkInfo = networkRepository.Get();
-
-            contextMenuManager.SetNotifyIconText(GetInfoDescription(cpuInfo, gpuInfo, memoryInfo));
-
-            var systemInfoValues = new List<string>();
-            systemInfoValues.AddRange(cpuInfo.GenerateIndicator());
-            if (gpuInfo.HasValue)
-            {
-                systemInfoValues.AddRange(gpuInfo.Value.GenerateIndicator());
-            }
-            systemInfoValues.AddRange(memoryInfo.GenerateIndicator());
-            systemInfoValues.AddRange(storageInfo.GenerateIndicator());
-            systemInfoValues.AddRange(networkInfo.GenerateIndicator());
-            contextMenuManager.SetSystemInfoMenuText(string.Join("\n", [.. systemInfoValues]));
-
-            return CalculateInterval(cpuInfo, gpuInfo, memoryInfo);
         }
 
         private void FetchTick(object? state, EventArgs e)
@@ -279,10 +316,51 @@ namespace RunCat365
             fetchCounter += 1;
             if (fetchCounter < FETCH_COUNTER_SIZE) return;
             fetchCounter = 0;
-            var interval = FetchSystemInfo();
-            animateTimer.Stop();
-            animateTimer.Interval = interval;
-            animateTimer.Start();
+            
+            var cpuInfo = cpuRepository.Get();
+            var gpuInfo = gpuRepository.Get();
+            var memoryInfo = memoryRepository.Get();
+            var storageInfo = storageRepository.Get();
+            var networkInfo = networkRepository.Get();
+
+            var sysInfoList = new List<string>();
+            sysInfoList.AddRange(cpuInfo.GenerateIndicator());
+            if (gpuInfo.HasValue) sysInfoList.AddRange(gpuInfo.Value.GenerateIndicator());
+            sysInfoList.AddRange(memoryInfo.GenerateIndicator());
+            sysInfoList.AddRange(storageInfo.GenerateIndicator());
+            sysInfoList.AddRange(networkInfo.GenerateIndicator());
+            var sysInfoText = string.Join("\n", sysInfoList);
+
+            cpuContextMenu?.SetSystemInfoMenuText(sysInfoText);
+            gpuContextMenu?.SetSystemInfoMenuText(sysInfoText);
+            memoryContextMenu?.SetSystemInfoMenuText(sysInfoText);
+
+            cpuContextMenu?.SetNotifyIconText(cpuInfo.GetDescription());
+            if (gpuInfo.HasValue) gpuContextMenu?.SetNotifyIconText(gpuInfo.Value.GetDescription());
+            memoryContextMenu?.SetNotifyIconText(memoryInfo.GetDescription());
+
+            var cpuInterval = CalculateInterval(cpuInfo.Total);
+            var gpuInterval = CalculateInterval(gpuInfo?.Maximum ?? 0f);
+            var memInterval = CalculateInterval(memoryInfo.MemoryLoad);
+
+            if (cpuAnimateTimer != null)
+            {
+                cpuAnimateTimer.Stop();
+                cpuAnimateTimer.Interval = cpuInterval;
+                cpuAnimateTimer.Start();
+            }
+            if (gpuAnimateTimer != null)
+            {
+                gpuAnimateTimer.Stop();
+                gpuAnimateTimer.Interval = gpuInterval;
+                gpuAnimateTimer.Start();
+            }
+            if (memoryAnimateTimer != null)
+            {
+                memoryAnimateTimer.Stop();
+                memoryAnimateTimer.Interval = memInterval;
+                memoryAnimateTimer.Start();
+            }
         }
 
         protected override void Dispose(bool disposing)
@@ -291,15 +369,23 @@ namespace RunCat365
             {
                 SystemEvents.UserPreferenceChanged -= UserPreferenceChanged;
 
-                animateTimer?.Stop();
-                animateTimer?.Dispose();
+                cpuAnimateTimer?.Stop();
+                cpuAnimateTimer?.Dispose();
+                gpuAnimateTimer?.Stop();
+                gpuAnimateTimer?.Dispose();
+                memoryAnimateTimer?.Stop();
+                memoryAnimateTimer?.Dispose();
                 fetchTimer?.Stop();
                 fetchTimer?.Dispose();
 
                 cpuRepository?.Close();
 
-                contextMenuManager?.HideNotifyIcon();
-                contextMenuManager?.Dispose();
+                cpuContextMenu?.HideNotifyIcon();
+                cpuContextMenu?.Dispose();
+                gpuContextMenu?.HideNotifyIcon();
+                gpuContextMenu?.Dispose();
+                memoryContextMenu?.HideNotifyIcon();
+                memoryContextMenu?.Dispose();
             }
             base.Dispose(disposing);
         }
