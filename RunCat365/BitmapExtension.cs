@@ -1,4 +1,4 @@
-﻿// Copyright 2025 Takuto Nakamura
+// Copyright 2025 Takuto Nakamura
 //
 //    Licensed under the Apache License, Version 2.0 (the "License");
 //    you may not use this file except in compliance with the License.
@@ -70,6 +70,28 @@ namespace RunCat365
             }
 
             return newBitmap;
+        }
+
+        internal static Bitmap ScaleToFit(this Bitmap bitmap, int targetSize)
+        {
+            float scale = Math.Min(
+                (float)targetSize / bitmap.Width,
+                (float)targetSize / bitmap.Height
+            );
+
+            int newW = (int)(bitmap.Width * scale);
+            int newH = (int)(bitmap.Height * scale);
+            int offsetX = (targetSize - newW) / 2;
+            int offsetY = (targetSize - newH) / 2;
+
+            var canvas = new Bitmap(targetSize, targetSize, PixelFormat.Format32bppArgb);
+            using var g = Graphics.FromImage(canvas);
+            g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
+            g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
+            g.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.HighQuality;
+            g.Clear(Color.Transparent);
+            g.DrawImage(bitmap, offsetX, offsetY, newW, newH);
+            return canvas;
         }
 
         internal static Icon ToIcon(this Bitmap bitmap)

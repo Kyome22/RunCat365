@@ -1,4 +1,4 @@
-﻿<?xml version='1.0' encoding='utf-8'?>
+<?xml version='1.0' encoding='utf-8'?>
 <SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="RunCat365.Properties" GeneratedClassName="UserSettings">
   <Profiles />
   <Settings>
@@ -19,6 +19,24 @@
     </Setting>
     <Setting Name="SpeedSource" Type="System.String" Scope="User">
       <Value Profile="(Default)">CPU</Value>
+    </Setting>
+    <Setting Name="ShowCPU" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="CPURunner" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Cat</Value>
+    </Setting>
+    <Setting Name="ShowGPU" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="GPURunner" Type="System.String" Scope="User">
+      <Value Profile="(Default)">GamingCat</Value>
+    </Setting>
+    <Setting Name="ShowMemory" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="MemoryRunner" Type="System.String" Scope="User">
+      <Value Profile="(Default)">PartyParrot</Value>
     </Setting>
   </Settings>
 </SettingsFile>
