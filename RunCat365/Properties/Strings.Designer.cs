@@ -395,5 +395,11 @@ namespace RunCat365.Properties {
                 return ResourceManager.GetString("SystemInfo_Maximum", resourceCulture);
             }
         }
+
+        internal static string SystemInfo_Temperature {
+            get {
+                return ResourceManager.GetString("SystemInfo_Temperature", resourceCulture);
+            }
+        }
     }
 }

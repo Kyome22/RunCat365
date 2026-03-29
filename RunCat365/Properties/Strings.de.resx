@@ -234,4 +234,7 @@
   <data name="Game_NewRecord" xml:space="preserve">
     <value>Neuer Rekord</value>
   </data>
+  <data name="SystemInfo_Temperature" xml:space="preserve">
+    <value>Temperatur</value>
+  </data>
 </root>
