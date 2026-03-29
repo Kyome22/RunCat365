@@ -1,4 +1,4 @@
-﻿// Copyright 2020 Takuto Nakamura
+// Copyright 2020 Takuto Nakamura
 //
 //    Licensed under the Apache License, Version 2.0 (the "License");
 //    you may not use this file except in compliance with the License.
@@ -60,10 +60,12 @@ namespace RunCat365
         private readonly MemoryRepository memoryRepository;
         private readonly StorageRepository storageRepository;
         private readonly NetworkRepository networkRepository;
+        private readonly TemperatureRepository temperatureRepository;
         private readonly LaunchAtStartupManager launchAtStartupManager;
         private readonly ContextMenuManager contextMenuManager;
         private readonly FormsTimer fetchTimer;
         private readonly FormsTimer animateTimer;
+        private readonly FormsTimer temperatureFetchTimer;
         private Runner runner = Runner.Cat;
         private Theme manualTheme = Theme.System;
         private FPSMaxLimit fpsMaxLimit = FPSMaxLimit.FPS40;
@@ -85,6 +87,7 @@ namespace RunCat365
             memoryRepository = new MemoryRepository();
             storageRepository = new StorageRepository();
             networkRepository = new NetworkRepository();
+            temperatureRepository = new TemperatureRepository();
             launchAtStartupManager = new LaunchAtStartupManager();
 
             ResolveSpeedSource();
@@ -119,6 +122,13 @@ namespace RunCat365
             };
             fetchTimer.Tick += new EventHandler(FetchTick);
             fetchTimer.Start();
+
+            temperatureFetchTimer = new FormsTimer
+            {
+                Interval = 5000
+            };
+            temperatureFetchTimer.Tick += new EventHandler(TemperatureFetchTick);
+            temperatureFetchTimer.Start();
 
             ShowBalloonTipIfNeeded();
         }
@@ -226,13 +236,20 @@ namespace RunCat365
 
         private string GetInfoDescription(CPUInfo cpuInfo, GPUInfo? gpuInfo, MemoryInfo memoryInfo)
         {
-            return speedSource switch
+            var baseDesc = speedSource switch
             {
                 SpeedSource.CPU => cpuInfo.GetDescription(),
                 SpeedSource.GPU => gpuInfo?.GetDescription() ?? "",
                 SpeedSource.Memory => memoryInfo.GetDescription(),
                 _ => "",
             };
+
+            var tempCelsius = temperatureRepository.GetLatestCelsius();
+            if (tempCelsius.HasValue)
+            {
+                return $"{baseDesc} | Temp: {(int)Math.Round(tempCelsius.Value)}°C";
+            }
+            return baseDesc;
         }
 
         private int CalculateInterval(CPUInfo cpuInfo, GPUInfo? gpuInfo, MemoryInfo memoryInfo)
@@ -265,6 +282,11 @@ namespace RunCat365
                 systemInfoValues.AddRange(gpuInfo.Value.GenerateIndicator());
             }
             systemInfoValues.AddRange(memoryInfo.GenerateIndicator());
+            var tempInfo = temperatureRepository.Get();
+            if (tempInfo.HasValue)
+            {
+                systemInfoValues.AddRange(tempInfo.Value.GenerateIndicator());
+            }
             systemInfoValues.AddRange(storageInfo.GenerateIndicator());
             systemInfoValues.AddRange(networkInfo.GenerateIndicator());
             contextMenuManager.SetSystemInfoMenuText(string.Join("\n", [.. systemInfoValues]));
@@ -285,6 +307,11 @@ namespace RunCat365
             animateTimer.Start();
         }
 
+        private void TemperatureFetchTick(object? state, EventArgs e)
+        {
+            temperatureRepository.Update();
+        }
+
         protected override void Dispose(bool disposing)
         {
             if (disposing)
@@ -295,8 +322,11 @@ namespace RunCat365
                 animateTimer?.Dispose();
                 fetchTimer?.Stop();
                 fetchTimer?.Dispose();
+                temperatureFetchTimer?.Stop();
+                temperatureFetchTimer?.Dispose();
 
                 cpuRepository?.Close();
+                temperatureRepository?.Close();
 
                 contextMenuManager?.HideNotifyIcon();
                 contextMenuManager?.Dispose();

@@ -234,4 +234,7 @@
   <data name="Game_NewRecord" xml:space="preserve">
     <value>新記録</value>
   </data>
+  <data name="SystemInfo_Temperature" xml:space="preserve">
+    <value>温度</value>
+  </data>
 </root>
