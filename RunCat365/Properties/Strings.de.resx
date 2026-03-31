@@ -234,4 +234,7 @@
   <data name="Game_NewRecord" xml:space="preserve">
     <value>Neuer Rekord</value>
   </data>
+  <data name="Menu_ActiveIcons" xml:space="preserve">
+    <value>Aktive Symbole</value>
+  </data>
 </root>

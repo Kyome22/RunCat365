@@ -395,5 +395,11 @@ namespace RunCat365.Properties {
                 return ResourceManager.GetString("SystemInfo_Maximum", resourceCulture);
             }
         }
+
+        internal static string Menu_ActiveIcons {
+            get {
+                return ResourceManager.GetString("Menu_ActiveIcons", resourceCulture);
+            }
+        }
     }
 }
