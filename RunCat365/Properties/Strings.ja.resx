@@ -243,4 +243,52 @@
   <data name="SystemInfo_TemperatureFahrenheitFormat" xml:space="preserve">
     <value>{0:f1}°F</value>
   </data>
+  <data name="Menu_CustomRunners" xml:space="preserve">
+    <value>カスタムランナー...</value>
+  </data>
+  <data name="Window_CustomRunners" xml:space="preserve">
+    <value>カスタムランナー</value>
+  </data>
+  <data name="CustomRunner_AddedRunners" xml:space="preserve">
+    <value>追加済みランナー:</value>
+  </data>
+  <data name="CustomRunner_Name" xml:space="preserve">
+    <value>ランナー名:</value>
+  </data>
+  <data name="CustomRunner_AddFrames" xml:space="preserve">
+    <value>フレーム追加...</value>
+  </data>
+  <data name="CustomRunner_ClearFrames" xml:space="preserve">
+    <value>クリア</value>
+  </data>
+  <data name="CustomRunner_RemoveFrame" xml:space="preserve">
+    <value>フレームを削除</value>
+  </data>
+  <data name="CustomRunner_MoveFrameUp" xml:space="preserve">
+    <value>上へ</value>
+  </data>
+  <data name="CustomRunner_MoveFrameDown" xml:space="preserve">
+    <value>下へ</value>
+  </data>
+  <data name="CustomRunner_Save" xml:space="preserve">
+    <value>保存</value>
+  </data>
+  <data name="CustomRunner_Delete" xml:space="preserve">
+    <value>削除</value>
+  </data>
+  <data name="CustomRunner_Requirements" xml:space="preserve">
+    <value>形式: PNG | 最大サイズ: 32x32px</value>
+  </data>
+  <data name="CustomRunner_ErrorEmptyName" xml:space="preserve">
+    <value>ランナー名を入力してください。</value>
+  </data>
+  <data name="CustomRunner_ErrorMinFrames" xml:space="preserve">
+    <value>2フレーム以上追加してください。</value>
+  </data>
+  <data name="CustomRunner_ConfirmOverwrite" xml:space="preserve">
+    <value>同名のランナーが既に存在します。上書きしますか？</value>
+  </data>
+  <data name="CustomRunner_ConfirmDelete" xml:space="preserve">
+    <value>ランナー「{0}」を削除しますか？</value>
+  </data>
 </root>

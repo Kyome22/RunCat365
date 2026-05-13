@@ -61,6 +61,7 @@ namespace RunCat365
         private readonly TemperatureRepository temperatureRepository;
         private readonly StorageRepository storageRepository;
         private readonly NetworkRepository networkRepository;
+        private readonly CustomRunnerRepository customRunnerRepository;
         private readonly LaunchAtStartupManager launchAtStartupManager;
         private readonly ContextMenuManager contextMenuManager;
         private readonly FormsTimer fetchTimer;
@@ -69,6 +70,7 @@ namespace RunCat365
         private Theme manualTheme = Theme.System;
         private FPSMaxLimit fpsMaxLimit = FPSMaxLimit.FPS40;
         private SpeedSource speedSource = SpeedSource.CPU;
+        private string? customRunnerName;
         private int fetchCounter = 5;
 
         public RunCat365ApplicationContext()
@@ -78,6 +80,9 @@ namespace RunCat365
             _ = Enum.TryParse(UserSettings.Default.Theme, out manualTheme);
             _ = Enum.TryParse(UserSettings.Default.FPSMaxLimit, out fpsMaxLimit);
             _ = Enum.TryParse(UserSettings.Default.SpeedSource, out speedSource);
+            customRunnerName = string.IsNullOrEmpty(UserSettings.Default.CustomRunnerName)
+                ? null
+                : UserSettings.Default.CustomRunnerName;
 
             SystemEvents.UserPreferenceChanged += new UserPreferenceChangedEventHandler(UserPreferenceChanged);
 
@@ -87,6 +92,7 @@ namespace RunCat365
             temperatureRepository = new TemperatureRepository();
             storageRepository = new StorageRepository();
             networkRepository = new NetworkRepository();
+            customRunnerRepository = new CustomRunnerRepository();
             launchAtStartupManager = new LaunchAtStartupManager();
 
             ResolveSpeedSource();
@@ -105,8 +111,17 @@ namespace RunCat365
                 () => launchAtStartupManager.GetStartup(),
                 s => launchAtStartupManager.SetStartup(s),
                 () => OpenRepository(),
-                () => Application.Exit()
+                () => Application.Exit(),
+                customRunnerRepository,
+                () => customRunnerName,
+                name => ApplyCustomRunner(name),
+                () => RevertToBuiltInRunner()
             );
+
+            if (customRunnerName is not null)
+            {
+                ApplyCustomRunner(customRunnerName);
+            }
 
             animateTimer = new FormsTimer
             {
@@ -173,7 +188,14 @@ namespace RunCat365
             if (e.Category == UserPreferenceCategory.General)
             {
                 var systemTheme = GetSystemTheme();
-                contextMenuManager.SetIcons(systemTheme, manualTheme, runner);
+                if (customRunnerName is not null)
+                {
+                    ApplyCustomRunner(customRunnerName);
+                }
+                else
+                {
+                    contextMenuManager.SetIcons(systemTheme, manualTheme, runner);
+                }
             }
         }
 
@@ -196,8 +218,29 @@ namespace RunCat365
         private void ChangeRunner(Runner r)
         {
             runner = r;
+            customRunnerName = null;
             UserSettings.Default.Runner = runner.ToString();
+            UserSettings.Default.CustomRunnerName = string.Empty;
             UserSettings.Default.Save();
+        }
+
+        private void ApplyCustomRunner(string name)
+        {
+            var frames = customRunnerRepository.LoadFrames(name);
+            if (frames.Count == 0) return;
+            customRunnerName = name;
+            UserSettings.Default.CustomRunnerName = name;
+            UserSettings.Default.Save();
+            contextMenuManager.SetCustomIcons(frames, GetSystemTheme(), manualTheme);
+            foreach (var frame in frames) frame.Dispose();
+        }
+
+        private void RevertToBuiltInRunner()
+        {
+            customRunnerName = null;
+            UserSettings.Default.CustomRunnerName = string.Empty;
+            UserSettings.Default.Save();
+            contextMenuManager.SetIcons(GetSystemTheme(), manualTheme, runner);
         }
 
         private void ChangeManualTheme(Theme t)

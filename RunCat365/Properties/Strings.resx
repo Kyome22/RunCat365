@@ -243,4 +243,52 @@
   <data name="SystemInfo_TemperatureFahrenheitFormat" xml:space="preserve">
     <value>{0:f1}°F</value>
   </data>
+  <data name="Menu_CustomRunners" xml:space="preserve">
+    <value>Custom Runners...</value>
+  </data>
+  <data name="Window_CustomRunners" xml:space="preserve">
+    <value>Custom Runners</value>
+  </data>
+  <data name="CustomRunner_AddedRunners" xml:space="preserve">
+    <value>Custom Runners:</value>
+  </data>
+  <data name="CustomRunner_Name" xml:space="preserve">
+    <value>Runner Name:</value>
+  </data>
+  <data name="CustomRunner_AddFrames" xml:space="preserve">
+    <value>Add Frames...</value>
+  </data>
+  <data name="CustomRunner_ClearFrames" xml:space="preserve">
+    <value>Clear</value>
+  </data>
+  <data name="CustomRunner_RemoveFrame" xml:space="preserve">
+    <value>Remove Frame</value>
+  </data>
+  <data name="CustomRunner_MoveFrameUp" xml:space="preserve">
+    <value>Up</value>
+  </data>
+  <data name="CustomRunner_MoveFrameDown" xml:space="preserve">
+    <value>Down</value>
+  </data>
+  <data name="CustomRunner_Save" xml:space="preserve">
+    <value>Save</value>
+  </data>
+  <data name="CustomRunner_Delete" xml:space="preserve">
+    <value>Delete</value>
+  </data>
+  <data name="CustomRunner_Requirements" xml:space="preserve">
+    <value>Format: PNG | Max Dimensions: 32x32px</value>
+  </data>
+  <data name="CustomRunner_ErrorEmptyName" xml:space="preserve">
+    <value>Please enter a runner name.</value>
+  </data>
+  <data name="CustomRunner_ErrorMinFrames" xml:space="preserve">
+    <value>Please add at least 2 frames.</value>
+  </data>
+  <data name="CustomRunner_ConfirmOverwrite" xml:space="preserve">
+    <value>A runner with this name already exists. Overwrite?</value>
+  </data>
+  <data name="CustomRunner_ConfirmDelete" xml:space="preserve">
+    <value>Delete runner "{0}"?</value>
+  </data>
 </root>
